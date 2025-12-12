@@ -1,0 +1,39 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+
+<h2 style="text-align:center;">Edit Product</h2>
+
+<form method="POST" style="width:400px; margin:auto; margin-top:30px;">
+    {% csrf_token %}
+
+    <label>Product Name</label>
+    <input type="text" name="name" value="{{ product.name }}" required
+           style="width:100%; padding:8px; margin-bottom:10px;">
+
+    <label>Price</label>
+    <input type="number" name="price" value="{{ product.price }}" required
+           style="width:100%; padding:8px; margin-bottom:10px;">
+
+    <label>Customer Price</label>
+    <input type="number" name="customer_price" 
+       value="{{ product.customer_price }}" required
+           style="width:100%; padding:8px; margin-bottom:10px;" 
+       class="form-control">
+
+
+    <label>Stock</label>
+    <input type="number" name="stock" value="{{ product.stock }}" required
+           style="width:100%; padding:8px; margin-bottom:20px;">
+
+       <label>Updated Date</label>
+       <input type="date" name="updated_at" value="{{ product.updated_at|date:'Y-m-d' }}">
+
+
+
+    <button type="submit"
+            style="padding:10px 20px; background:#28a745; color:white; border-radius:6px;">
+        Save Changes
+    </button>
+</form>
+
+{% endblock %}

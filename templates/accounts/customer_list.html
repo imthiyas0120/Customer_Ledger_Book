@@ -1,0 +1,153 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+
+<style>
+    
+    .add-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        font-size: 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+    .add-btn:hover {
+        background: #005fcc;
+    }
+
+    
+    .customer-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+
+    .customer-table th {
+        background: #f1f1f1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .customer-table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+    }
+
+    
+    .due-row {
+        background-color: #ffcccc;
+    }
+
+    
+    .action-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 5px;
+        color: white;
+        text-decoration: none;
+        margin-right: 5px;
+        display: inline-block;
+    }
+
+    .view-btn {
+        background: #17a2b8;
+    }
+    .view-btn:hover {
+        background: #0f7a8b;
+    }
+
+    .edit-btn {
+        background: #28a745;
+    }
+    .edit-btn:hover {
+        background: #1e7d34;
+    }
+
+    .delete-btn {
+        background: #dc3545;
+    }
+    .delete-btn:hover {
+        background: #b5212e;
+    }
+
+    .action-col {
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .box-green {
+        background-color: #d9ffe0 !important;   
+        color: #0a7a1c !important;              
+        font-weight: bold;
+        text-align: center;
+            }
+
+    .box-red {
+        background-color: #ffe0e0 !important;  
+        color: #b30000 !important;             
+        font-weight: bold;
+        text-align: center;
+        }
+</style>
+
+
+<h2 style="text-align:center;">Customers</h2>
+
+
+<div style="text-align:center; margin-bottom:20px;">
+    <form method="get" action="{% url 'accounts:search_customers' %}">
+        <input type="text" name="q" placeholder="Search by name or phone"
+               value="{{ request.GET.q }}" 
+               style="padding:6px; width:250px; border-radius:6px; border:1px solid #ccc;">
+
+        <button class="btn" style="padding:8px 15px; background:#007bff; 
+                       color:white; border:none; border-radius:5px;">Search</button>
+    </form>
+</div>
+
+
+<div style="text-align:center; margin-bottom:20px;">
+    <a href="{% url 'accounts:customer_add' %}" class="add-btn">
+        + Add Customer
+    </a>
+</div>
+
+
+<table class="customer-table">
+    <tr>
+        <th>S.No</th>
+        <th>Customer ID</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Total Amount</th>
+        <th>Paid</th>
+        <th>Balance</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for c in customers %}
+    <tr class="{% if c.is_due_1_month and c.balance > 0 %}due-row{% endif %}">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ c.customer_id }}</td>
+        <td>{{ c.name }}</td>
+        <td>{{ c.phone }}</td>
+        <td>₹{{ c.total_selling }}</td>
+        <td class="box-green">₹{{ c.total_paid }}</td>
+        <td class="box-red">₹{{ c.balance }}</td>
+
+        <td class="action-col">
+            <a href="{% url 'accounts:customer_ledger' c.id %}" class="action-btn view-btn">View</a>
+            <a href="{% url 'accounts:customer_edit' c.id %}" class="action-btn edit-btn">Edit</a>
+            <a href="{% url 'accounts:customer_delete' c.id %}" class="action-btn delete-btn">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

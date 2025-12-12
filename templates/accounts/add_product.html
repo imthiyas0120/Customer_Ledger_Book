@@ -1,0 +1,46 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+
+<h2 style="text-align:center;">Add Product</h2>
+
+<div style="
+    width:60%;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 12px rgba(0,0,0,0.1);
+">
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label style="font-size:18px;">Product Name</label>
+        <input type="text" name="name" required
+               style="width:100%; padding:10px; margin-bottom:15px; font-size:16px;">
+
+        
+        <label style="font-size:18px;">Stock</label>
+        <input type="number" name="stock" required
+               style="width:100%; padding:10px; margin-bottom:20px; font-size:16px;">
+
+        <label>Original Price</label>
+        <input type="number" name="price" class="form-control" required style="width:100%; padding:10px; margin-bottom:20px; font-size:16px;">
+
+        <label>Customer Price</label>
+        <input type="number" name="customer_price" class="form-control" required style="width:100%; padding:10px; margin-bottom:20px; font-size:16px;">
+
+
+        <label>Updated Date:</label>
+        <input type="date" name="updated_at" required> 
+
+        <button type="submit"
+                style="padding:10px 25px; background:#007bff; color:white;
+                       border:none; border-radius:6px; cursor:pointer; font-size:16px;">
+            Add Product
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}

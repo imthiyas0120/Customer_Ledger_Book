@@ -1,0 +1,104 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+<style>
+    .turnover-table {
+        width: 70%;
+        margin: auto;
+        font-size: 18px;
+        background: #ffffff;
+
+        
+        border-collapse: separate;
+        border-spacing: 0;
+
+        
+        border: 1px solid #000000;
+
+        
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .turnover-table th {
+        background: #e6f3ff;
+        padding: 12px;
+        font-weight: bold;
+        text-align: left;
+
+        
+        border: 1px solid #000000;
+    }
+
+    .turnover-table td {
+        padding: 12px;
+
+        
+        border: 1px solid #000000;
+    }
+
+    .turnover-table tr:hover {
+        background: #f4faff;
+        transition: 0.2s ease-in-out;
+    }
+
+    .turnover-section {
+        padding: 40px 0;
+    }
+</style>
+
+
+
+
+
+
+<div class="turnover-section">
+    <h2 style="text-align:center; margin-bottom: 20px;">Total Turnover</h2>
+
+    <table class="turnover-table">
+        <tr>
+            <th>Description</th>
+            <th>Amount</th>
+        </tr>
+        <tr>
+            <td>Total Product Sold Amount</td>
+            <td>₹{{ total_sold }}</td>
+        </tr>
+        <tr>
+            <td>Total Amount Paid by Customers</td>
+            <td>₹{{ total_paid }}</td>
+        </tr>
+        <tr>
+            <td>Total Outstanding Balance</td>
+            <td>₹{{ total_balance }}</td>
+        </tr>
+    </table>
+</div>
+
+
+
+<br><br>
+<h2 style="text-align:center; margin-bottom: 20px;">Monthly Breakdown (Full Year)</h2>
+
+<table class="turnover-table">
+    <tr>
+        <th>Month</th>
+        <th>Sold</th>
+        <th>Original Cost</th>
+        <th>Profit</th>
+        <th>Paid</th>
+        <th>Balance</th>
+    </tr>
+
+    {% for m in monthly_data %}
+    <tr>
+        <td>{{ m.month }}</td>
+        <td>₹{{ m.sold }}</td>
+        <td>₹{{ m.original_cost }}</td>
+        <td>₹{{ m.profit }}</td>
+        <td>₹{{ m.paid }}</td>
+        <td>₹{{ m.balance }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

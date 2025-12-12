@@ -1,0 +1,113 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+
+<div class="calc-container">
+    <h2 class="calc-title">Calculator</h2>
+
+    <input type="text" id="display" class="calc-display" readonly>
+
+    <div class="calc-grid">
+        <button onclick="press('7')">7</button>
+        <button onclick="press('8')">8</button>
+        <button onclick="press('9')">9</button>
+        <button class="op" onclick="press('/')">÷</button>
+
+        <button onclick="press('4')">4</button>
+        <button onclick="press('5')">5</button>
+        <button onclick="press('6')">6</button>
+        <button class="op" onclick="press('*')">×</button>
+
+        <button onclick="press('1')">1</button>
+        <button onclick="press('2')">2</button>
+        <button onclick="press('3')">3</button>
+        <button class="op" onclick="press('-')">−</button>
+
+        <button onclick="press('0')">0</button>
+        <button onclick="press('.')">.</button>
+        <button class="eq" onclick="calculate()">=</button>
+        <button class="op" onclick="press('+')">+</button>
+
+        <button class="clear" onclick="clearCalc()">Clear</button>
+    </div>
+</div>
+
+<style>
+.calc-container {
+    width: 350px;
+    margin: 50px auto;
+    padding: 25px;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.calc-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.calc-display {
+    width: 100%;
+    height: 50px;
+    font-size: 24px;
+    text-align: right;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.calc-grid button {
+    height: 55px;
+    font-size: 20px;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.calc-grid .op {
+    background: #ffd9a6;
+}
+
+.calc-grid .eq {
+    background: #7dc2ff;
+    color: white;
+}
+
+.calc-grid .clear {
+    grid-column: span 4;
+    background: #ff8b8b;
+    color: white;
+    font-weight: bold;
+}
+</style>
+
+<script>
+function press(v) {
+    document.getElementById("display").value += v;
+}
+
+function clearCalc() {
+    document.getElementById("display").value = "";
+}
+
+function calculate() {
+    try {
+        let result = eval(document.getElementById("display").value);
+        document.getElementById("display").value = result;
+    } catch {
+        document.getElementById("display").value = "Error";
+    }
+}
+</script>
+
+{% endblock %}

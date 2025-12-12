@@ -1,0 +1,209 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h2 class="page-title">Add New Customer & First Transaction</h2>
+
+<div class="form-card">
+
+    <form method="POST">
+        {% csrf_token %}
+
+        
+        <h3 class="section-title">Customer Details</h3>
+
+        <label>Name:</label>
+        {{ customer_form.name }}
+
+        <label>Phone:</label>
+        {{ customer_form.phone }}
+
+        <label>Address:</label>
+        {{ customer_form.address }}
+
+        <hr>
+
+        
+        <h3 class="section-title">First Transaction Details</h3>
+
+        <label>Product Name:</label>
+        {{ transaction_form.product }}
+
+        <label>Quantity:</label>
+        {{ transaction_form.quantity }}
+
+        <label>Selling Price:</label>
+        {{ transaction_form.selling_price }}
+
+        <label>Advance Amount:</label>
+        {{ transaction_form.advance_amount }}
+
+        <label>Date:</label>
+        {{ transaction_form.date }}
+
+        <label>Payment Method:</label>
+        {{ transaction_form.payment_method }}
+
+        <div class="center-btn">
+            <button type="submit" class="primary-btn">
+                Save Customer
+            </button>
+        </div>
+
+    </form>
+</div>
+
+
+
+<style>
+
+.form-card {
+    width: 45%;
+    margin: auto;
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 16px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.page-title, .section-title {
+    text-align: center;
+    font-weight: 700;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+input, select, textarea {
+    width: 95%;
+    display: block;
+    margin: auto;
+    margin-top: 6px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+textarea {
+    height: 90px;
+    resize: vertical;
+}
+
+.center-btn {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.primary-btn {
+    background: #007bff;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: #0056b3;
+}
+
+/* Calculator Styling */
+#miniCalc {
+    position: fixed;
+    top: 160px;
+    right: 120px;
+    width: 240px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.20);
+    font-family: Arial;
+    z-index: 9999;
+}
+
+#calcDisplay {
+    width: 100%;
+    height: 45px;
+    font-size: 20px;
+    text-align: right;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.calc-buttons button {
+    height: 48px;
+    font-size: 18px;
+    border: none;
+    background: #f3f3f3;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.calc-buttons button:hover { background: #e4e4e4; }
+.calc-buttons .op { background: #ffe0b3; }
+.calc-buttons .eq { background: #80c7ff; }
+.calc-buttons .clear {
+    grid-column: span 4;
+    height: 50px;
+    background: #ff8b8b;
+    font-size: 20px;
+    margin-top: 5px;
+}
+
+</style>
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const productSelect = document.getElementById("id_product");
+    const quantityInput = document.getElementById("id_quantity");
+    const sellingInput = document.getElementById("id_selling_price");
+
+    async function updateSellingPrice() {
+
+        const productId = productSelect.value;
+        const qty = parseInt(quantityInput.value) || 1;
+
+        if (!productId) return;
+
+        
+        const response = await fetch(`/get-product-price/${productId}/`);
+        const data = await response.json();
+
+        const unit_price = data.customer_price || 0;
+        sellingInput.value = unit_price * qty;
+
+    }
+
+    productSelect.addEventListener("change", updateSellingPrice);
+    quantityInput.addEventListener("input", updateSellingPrice);
+});
+</script>
+
+
+
+
+
+{% endblock %}

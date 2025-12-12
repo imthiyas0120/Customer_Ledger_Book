@@ -1,0 +1,136 @@
+{% block content %}
+
+<div style="
+    max-width: 500px; 
+    margin: 60px auto; 
+    background: white; 
+    padding: 35px; 
+    border-radius: 16px; 
+    box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+    font-family: Arial;
+">
+
+    <div style="text-align:center; margin-bottom:20px;">
+        <img src="/static/accounts/logo.png" style="height:60px;" alt="Logo">
+        <h2 style="margin-top:10px;">Create Account</h2>
+    </div>
+
+    {% if error_message %}
+    <p style="color:red; text-align:center; margin-bottom:15px;">
+        {{ error_message }}
+    </p>
+    {% endif %}
+
+    <form method="POST">
+                {% csrf_token %}
+
+      
+        <label style="font-weight:bold;">Full Name:</label>
+        <input type="text" name="first_name" required style="
+            width:100%; padding:12px; border:1px solid #ccc;
+            border-radius:8px; margin-bottom:15px;">
+
+
+        
+        <label style="font-weight:bold;">Username:</label>
+        <input type="text" name="username" required style="
+            width:100%; padding:12px; border:1px solid #ccc;
+            border-radius:8px; margin-bottom:15px;">
+
+
+        
+        <label style="font-weight:bold;">Password:</label>
+        <div style="position:relative;">
+            <input type="password" id="password1" name="password1" required style="
+                width:100%; padding:12px; padding-right:45px;
+                border:1px solid #ccc; border-radius:8px;">
+
+            <img id="eye1" src="/static/accounts/icons/eye.png"
+                onclick="togglePassword('password1','eye1')"
+                style="width:22px; height:22px;
+                       position:absolute; right:12px; top:50%;
+                       transform:translateY(-50%); cursor:pointer;">
+        </div>
+
+        <ul style="font-size:14px; color:#555; margin-bottom:15px;">
+            <li>Your password must contain at least 8 characters.</li>
+            <li>It cannot be too similar to your personal information.</li>
+            <li>It cannot be a commonly used password.</li>
+            <li>It cannot be entirely numeric.</li>
+        </ul>
+
+
+        
+        
+        <label style="font-weight:bold;">Confirm Password:</label>
+        <div style="position:relative; margin-bottom:25px;">
+            <input type="password" id="password2" name="password2" required style="
+                width:100%; padding:12px; padding-right:45px;
+                border:1px solid #ccc; border-radius:8px;">
+
+            <img id="eye2" src="/static/accounts/icons/eye.png"
+                onclick="togglePassword('password2','eye2')"
+                style="width:22px; height:22px;
+                    position:absolute; right:12px; top:50%;
+                    transform:translateY(-50%); cursor:pointer;">
+        </div>
+
+
+        <label style="font-weight:bold;">Security Question:</label>
+        <input type="text" name="security_question" value="What is your favourite color?" 
+       readonly
+       style="
+            width:100%; padding:12px;
+            border:1px solid #ccc; border-radius:8px;
+            margin-bottom:20px;
+            background:#f8f8f8; 
+            font-weight:bold;
+        ">
+
+
+
+        <label style="font-weight:bold;">Security Answer:</label>
+<input type="text" name="security_answer" required 
+       style="
+            width:100%; padding:12px;
+            border:1px solid #ccc; border-radius:8px;
+            margin-bottom:25px;
+       ">
+
+
+        
+        <button style="
+            width:100%; padding:14px; 
+            background:#007bff; color:white; 
+            border:none; font-size:18px; 
+            border-radius:8px; cursor:pointer;">
+            Sign Up
+        </button>
+
+    </form>
+
+    <p style="text-align:center; margin-top:20px; font-size:16px;">
+        Already have an account?
+        <a href="{% url 'login' %}" style="color:#007bff;">Login</a>
+    </p>
+
+</div>
+
+
+
+<script>
+function togglePassword(inputId, eyeId) {
+    let field = document.getElementById(inputId);
+    let icon = document.getElementById(eyeId);
+
+    if (field.type === "password") {
+        field.type = "text";
+        icon.src = "/static/accounts/icons/invisible.png";  
+    } else {
+        field.type = "password";
+        icon.src = "/static/accounts/icons/eye.png";  
+    }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+
+
+<style>
+
+    
+    .ledger-header {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 25px;
+    }
+
+    .ledger-header h2 {
+        margin-bottom: 5px;
+        font-size: 28px;
+    }
+
+    
+    .totals-box {
+        width: 350px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 15px;
+        background: #fafafa;
+        margin-left: 20px;
+        font-size: 18px;
+        margin-bottom: 25px;
+    }
+
+    .totals-box th, 
+    .totals-box td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .totals-box tr:last-child td {
+        font-weight: bold;
+        border-bottom: none;
+    }
+
+    
+    .btn-add {
+        padding: 10px 25px;
+        border-radius: 6px;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        margin-right: 10px;
+        display: inline-block;
+    }
+    .btn-add:hover { background: #0065d1; }
+
+    .btn-action {
+        padding: 6px 12px;
+        border-radius: 6px;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-block;
+        margin-right: 4px;
+    }
+
+    .btn-download {
+    padding: 9px 20px;
+    border-radius: 6px;
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    margin-left: 10px;
+    transition: 0.2s;
+    }
+
+.btn-download:hover {
+    background: #1e7d34;
+    
+    }
+
+
+    .btn-view { background: #17a2b8; }
+    .btn-view:hover { background: #0f7a8b; }
+
+    .btn-edit { background: #28a745; }
+    .btn-edit:hover { background: #1e7d34; }
+
+    .btn-delete { background: #dc3545; }
+    .btn-delete:hover { background: #b5212e; }
+
+    
+    .ledger-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background: white;
+        font-size: 17px;
+    }
+
+    .ledger-table th {
+        background: #f1f1f1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        font-weight: bold;
+    }
+
+    .ledger-table td {
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .action-col { 
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    
+    .credit-box {
+        width: 60%;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 20px 25px;
+        margin: 20px 0;
+        background: #fafafa;
+    }
+
+    .box-green {
+        background-color: #d9ffe0 !important;   
+        color: #0a7a1c !important;              
+        font-weight: bold;
+        text-align: center;
+            }
+
+    .box-red {
+        background-color: #ffe0e0 !important;  
+        color: #b30000 !important;             
+        font-weight: bold;
+        text-align: center;
+        }
+
+
+    
+
+</style>
+
+
+
+
+<div class="ledger-header">
+    <h2>{{ customer.name }}</h2>
+    <p><b>Phone:</b> {{ customer.phone }}</p>
+    <p><b>Address:</b> {{ customer.address }}</p>
+</div>
+
+<hr>
+
+
+<h2 style="margin-left:20px;">Totals</h2>
+
+<table class="totals-box">
+    <tr>
+        <th>Total Selling</th>
+        <td>₹{{ total_selling }}</td>
+    </tr>
+    <tr>
+        <th>Total Advance</th>
+        <td>₹{{ total_advance }}</td>
+    </tr>
+    <tr>
+        <th>Total Credit Received</th>
+        <td>₹{{ total_credit }}</td>
+    </tr>
+    <tr>
+        <th>Balance</th>
+        <td>₹{{ balance }}</td>
+    </tr>
+</table>
+
+
+
+
+<div style="margin-left:20px; margin-bottom:20px;">
+    <a href="{% url 'accounts:add_transaction' customer.id %}" class="btn-add">+ Add Product</a>
+    <a href="{% url 'accounts:export_customer_pdf' customer.id %}" class="btn-download">📄 Download Invoice</a>
+</div>
+
+
+
+
+<h3>Product Details</h3>
+
+<table class="ledger-table">
+    <tr>
+        <th>Date</th>
+        <th>Product</th>
+        <th>Selling Price</th>
+        <th>Advance</th>
+        <th>Balance</th>
+        <th>Method</th>
+        <th colspan="2">Actions</th>
+    </tr>
+
+    {% for t in transactions %}
+    <tr>
+        <td>{{ t.date|date:"M d, Y" }}</td>
+        <td>{{ t.product_name }}</td>
+        <td>₹{{ t.selling_price }}</td>
+        <td class="box-green">₹{{ t.advance_amount }}</td>
+        <td class="box-red">₹{{ t.balance }}</td>
+        <td>{{ t.payment_method }}</td>
+
+        <td class="action-col">
+            <a href="{% url 'accounts:transaction_edit' t.id %}" class="btn-action btn-edit">Edit</a>
+        </td>
+
+        <td class="action-col">
+            <a href="{% url 'accounts:transaction_delete' t.id %}" class="btn-action btn-delete">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+
+<h2>Customer Crediting</h2>
+
+<form method="POST" action="{% url 'accounts:customer_ledger' customer.id %}">
+    {% csrf_token %}
+
+    <div class="credit-box">
+        <table style="width:100%; border-collapse: separate; border-spacing: 0 12px; font-size:17px;">
+            <tr>
+                <td><b>Payment Method:</b></td>
+                <td>{{ credit_form.payment_method }}</td>
+            </tr>
+
+            <tr>
+                <td><b>Amount:</b></td>
+                <td>{{ credit_form.amount }}</td>
+            </tr>
+
+            <tr>
+                <td><b>Date:</b></td>
+                <td>{{ credit_form.date }}</td>
+            </tr>
+        </table>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" class="btn-add">Add Credit</button>
+        </div>
+    </div>
+</form>
+
+
+
+
+<h3>Customer Transactions</h3>
+
+<table class="ledger-table">
+    <tr>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Balance</th>
+        <th colspan="2">Actions</th>
+    </tr>
+
+    {% for c in credits %}
+    <tr>
+        <td>{{ c.date|date:"M d, Y, h:i a" }}</td>
+        <td class="box-green">₹{{ c.amount }}</td>
+        <td>{{ c.payment_method }}</td>
+        <td class="box-red">₹{{ c.balance }}</td>
+
+        <td class="action-col">
+            <a href="{% url 'accounts:credit_edit' c.id %}" class="btn-action btn-edit">Edit</a>
+        </td>
+
+        <td class="action-col">
+            <a href="{% url 'accounts:credit_delete' c.id %}" class="btn-action btn-delete">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    
+    window.addEventListener("pageshow", function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+</script>
+
+
+{% endblock %}

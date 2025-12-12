@@ -1,0 +1,110 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+
+<style>
+    table {
+        width: 80%;
+        margin: auto;
+        border-collapse: collapse;
+        font-size: 18px;
+        background: white;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    th {
+        background: #e8f0ff;
+        font-weight: bold;
+    }
+
+    .stock-cell { padding: 10px; }
+    .low-stock { color: red; font-weight: bold; }
+</style>
+
+<h2 style="text-align:center;">Product List</h2>
+
+
+<div style="text-align:center; margin-bottom:20px;">
+
+    <form method="get" action="" style="margin-bottom:15px;">
+        <input type="text" name="q" value="{{ request.GET.q }}"
+               style="padding:8px; width:280px; border:1px solid #ccc; border-radius:5px;">
+        
+        <button type="submit"
+                style="padding:8px 15px; background:#007bff; 
+                       color:white; border:none; border-radius:5px;">
+            Search
+        </button>
+    </form>
+</div>
+<div style="text-align:center; margin-bottom:20px;">
+    <a href="{% url 'accounts:add_product' %}"
+       style="padding:10px 20px; background:#007bff; color:white;
+              text-decoration:none; border-radius:6px;">
+        + Add Product
+    </a>
+</div>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Product Name</th>
+        <th>Stock</th>
+        <th>Original Price</th>
+        <th>Invested Amount</th>
+        <th>Customer Price</th>
+        
+        <th>Last Updated</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for product in products %}
+    <tr>
+        <td>{{ forloop.counter }}</td> 
+        <td>{{ product.name }}</td>
+
+        <td class="{% if product.stock <= 2 %}low-stock{% endif %}">{{ product.stock }}</td>
+        <td>₹{{ product.price }}</td>
+        <td>₹{{ product.invested_amount }}</td>
+        <td>₹{{ product.customer_price }}</td>
+        <td>{{ product.updated_at }}</td>
+
+        <td style="text-align: center;">
+            <a href="{% url 'accounts:product_view' product.id %}" 
+               style="padding:6px 12px; background:#17a2b8; color:white;
+                      text-decoration:none; border-radius:5px; margin-right:5px;">View</a>
+
+            <a href="{% url 'accounts:edit_product' product.id %}"
+               style="padding:6px 12px; background:#28a745; color:white;
+                      text-decoration:none; border-radius:5px; margin-right:5px;">
+                Edit
+            </a>
+
+            <a href="{% url 'accounts:delete_product' product.id %}"
+               style="padding:6px 12px; background:#dc3545; color:white;
+                      text-decoration:none; border-radius:5px;">
+                Delete
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+
+    <tfoot>
+<tr>
+    <td colspan="4" style="text-align:right; font-weight:bold;">Total Invested Amount:</td>
+    <td style="font-weight:bold; color:green;">₹{{ total_invested }}</td>
+    <td colspan="3"></td>
+</tr>
+</tfoot>
+
+
+
+
+</table>
+
+
+
+{% endblock %}

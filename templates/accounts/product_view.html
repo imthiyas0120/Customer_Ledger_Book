@@ -1,0 +1,45 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+
+<h2 style="text-align:center; font-weight:700; margin-bottom:20px;">
+    {{ product.name }}
+</h2>
+
+<div style="width:60%; margin:auto; font-size:18px;">
+    <p><strong>Stock:</strong> {{ product.stock }}</p>
+</div>
+
+<h3 style="text-align:center; margin-top:30px; font-weight:700;">
+    Stock Update History
+</h3>
+
+<div style="width:70%; margin:20px auto;">
+    <table style="width:100%; border-collapse:collapse; font-size:17px;">
+        <thead>
+            <tr style="background:#eaf3ff; text-align:center;">
+                <th style="border:1px solid #ccc; padding:10px;">Date</th>
+                <th style="border:1px solid #ccc; padding:10px;">Stock Before</th>
+                <th style="border:1px solid #ccc; padding:10px;">Stock After</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for h in history %}
+            <tr style="text-align:center;">
+                <td style="border:1px solid #ccc; padding:10px;">{{ h.updated_at }}</td>
+                <td style="border:1px solid #ccc; padding:10px;">{{ h.stock_before }}</td>
+                <td style="border:1px solid #ccc; padding:10px;">{{ h.stock_after }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" style="text-align:center; padding:15px; border:1px solid #ccc;">
+                    No history available
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

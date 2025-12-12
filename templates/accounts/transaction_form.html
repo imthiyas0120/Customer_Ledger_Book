@@ -1,0 +1,142 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<h1 class="page-title">Add Transaction for {{ customer.name }}</h1>
+
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+            <label>Product name:</label>
+            {{ form.product }}
+        </div>
+
+        <div class="form-row">
+            <label>Quantity:</label>
+            {{ form.quantity }}
+        </div>
+
+        <div class="form-row">
+            <label>Selling price (Auto-calculated):</label>
+            {{ form.selling_price }}
+        </div>
+
+        <div class="form-row">
+            <label>Advance amount:</label>
+            {{ form.advance_amount }}
+        </div>
+
+        <div class="form-row">
+            <label>Date:</label>
+            {{ form.date }}
+        </div>
+
+        <div class="form-row">
+            <label>Payment method:</label>
+            {{ form.payment_method }}
+        </div>
+
+        <div class="center-btn">
+            <button type="submit" class="primary-btn">Save Transaction</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .page-title {
+        font-size: 26px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+
+    .form-container {
+        background: #fafafa;
+        padding: 22px;
+        border-radius: 14px;
+        border: 1px solid #ddd;
+        width: 40%;
+        margin: auto;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .form-row { margin-bottom: 15px; }
+
+    label {
+        font-weight: bold;
+        font-size: 17px;
+        display: block;
+        margin-bottom: 6px;
+        text-align: center;
+    }
+
+    input, select {
+        width: 60%;
+        padding: 8px;
+        font-size: 15px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        display: block;
+        margin: 0 auto;
+    }
+
+    input[name="selling_price"] {
+        background: #eef7ff;
+        font-weight: bold;
+    }
+
+    .center-btn {
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    .primary-btn {
+        background: #007bff;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 7px;
+        border: none;
+        font-size: 17px;
+        cursor: pointer;
+    }
+
+    .primary-btn:hover { background: #0056b3; }
+</style>
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const productSelect = document.getElementById("id_product");
+    const quantityInput = document.getElementById("id_quantity");
+    const sellingInput = document.getElementById("id_selling_price");
+
+    async function updateSellingPrice() {
+
+        const productId = productSelect.value;
+        const qty = parseInt(quantityInput.value) || 1;
+
+        if (!productId) return;
+
+        
+        const response = await fetch(`/get-product-price/${productId}/`);
+        const data = await response.json();
+
+        const unit_price = data.customer_price || 0;
+        sellingInput.value = unit_price * qty;
+
+    }
+
+    productSelect.addEventListener("change", updateSellingPrice);
+    quantityInput.addEventListener("input", updateSellingPrice);
+});
+</script>
+
+
+{% endblock %}

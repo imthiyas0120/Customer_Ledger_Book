@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Question</title>
+
+    <style>
+        body {
+            background: #f4f7ff;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            max-width: 450px;
+            margin: 80px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .logo {
+            height: 60px;
+            margin-bottom: 12px;
+        }
+
+        h2 {
+            font-size: 26px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 18px;
+        }
+
+        button {
+            width: 100%;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .back-link {
+            margin-top: 18px;
+            font-size: 15px;
+        }
+
+        .back-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <img src="/static/accounts/logo.png" class="logo" alt="Logo">
+
+        <h2>Security Question</h2>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        
+        <p style="font-size:18px; margin-bottom:20px;">
+            <strong>{{ question }}</strong>
+        </p>
+
+        <form method="POST" action="{% url 'accounts:reset_password' %}">
+            {% csrf_token %}
+
+            <label>Your Answer:</label>
+            <input type="text" name="answer" required>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <p class="back-link">
+            <a href="{% url 'login' %}">Back to Login</a>
+        </p>
+
+    </div>
+
+</body>
+</html>
