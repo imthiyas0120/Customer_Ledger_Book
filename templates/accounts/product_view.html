@@ -15,7 +15,7 @@
 </h3>
 
 <div style="width:70%; margin:20px auto;">
-    <table style="width:100%; border-collapse:collapse; font-size:17px;">
+    <table style="width:100%; border-collapse:collapse; font-size:17px;" class="stock-table">
         <thead>
             <tr style="background:#eaf3ff; text-align:center;">
                 <th style="border:1px solid #ccc; padding:10px;">Date</th>
@@ -41,5 +41,50 @@
         </tbody>
     </table>
 </div>
+<style>
+    @media (max-width: 768px) {
 
+    /* Page safety */
+    html, body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* Table container */
+    .stock-table {
+        width: 100%;
+        font-size: 14px;
+        table-layout: fixed;
+    }
+
+    /* Header */
+    .stock-table th {
+        font-size: 14px;
+        padding: 8px;
+        text-align: center;
+        white-space: normal;
+    }
+
+    /* Cells */
+    .stock-table td {
+        font-size: 14px;
+        padding: 8px;
+        text-align: center;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    /* Stock info center */
+    h2 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 18px;
+        margin-top: 24px;
+    }
+}
+
+    
+</style>
 {% endblock %}

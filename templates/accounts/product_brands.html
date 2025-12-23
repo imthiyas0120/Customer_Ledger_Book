@@ -1,0 +1,266 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+
+<style>
+/*  PAGE WRAPPER  */
+.page-wrap {
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+/*  ADD BOX  */
+.add-box {
+    max-width: 520px;
+    margin: 0 auto 40px;
+    padding: 30px 35px;
+    border: 1.5px solid #000;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.add-box h2 {
+    margin-bottom: 22px;
+}
+
+.add-box label {
+    display: block;
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.add-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.add-box button {
+    width: 100%;
+    padding: 14px;
+    background: #0d6efd;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.add-box button:hover {
+    background: #0b5ed7;
+}
+
+/* TABLE  */
+.table-wrap {
+    border: 1.5px solid #000;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.brand-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.brand-table th {
+    background: #f3f3f3;
+    padding: 14px;
+    border-bottom: 1px solid #000;
+}
+
+.brand-table td {
+    padding: 14px;
+    border-top: 1px solid #000;
+    text-align: center;
+}
+
+/*  ACTION BUTTONS  */
+.btn-edit {
+    padding: 8px 16px;
+    background: #28a745;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-right: 6px;
+}
+
+.btn-delete {
+    padding: 8px 16px;
+    background: #dc3545;
+    color: #fff;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-edit:hover { background: #218838; }
+.btn-delete:hover { background: #c82333; }
+
+
+
+@media (max-width: 768px) {
+
+    /*  PAGE WRAP */
+    .page-wrap {
+        margin: 16px 12px;
+    }
+
+    /*  ADD BOX  */
+    .add-box {
+        width: calc(100% - 24px);
+        max-width: 420px;
+        margin: 0 auto 24px;
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+
+    .add-box h2 {
+        font-size: 20px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .add-box label {
+        font-size: 15px;
+        text-align: left;
+    }
+
+    .add-box input {
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+
+    .add-box button {
+        font-size: 16px;
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    /*  TABLE WRAP */
+    .table-wrap {
+        width: calc(100% - 24px);
+        margin: 0 auto;
+        border-radius: 14px;
+        overflow-x: auto;
+    }
+
+    /*  TABLE */
+    .brand-table {
+        width: 100%;
+        table-layout: fixed;
+        font-size: 14px;
+    }
+
+    .brand-table th,
+    .brand-table td {
+        padding: 10px 6px;
+        text-align: center;
+        word-break: break-word;
+    }
+
+    /* Fix S.No column */
+    .brand-table th:first-child,
+    .brand-table td:first-child {
+        width: 50px;
+        font-size: 14px;
+    }
+
+    /* Fix Actions column */
+    .brand-table th:last-child,
+    .brand-table td:last-child {
+        width: 90px;
+    }
+
+    /*  ACTION BUTTONS */
+    .brand-table td:last-child {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        border: none;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        width: 72px;
+        padding: 6px 0;
+        font-size: 13px;
+        border-radius: 6px;
+        text-align: center;
+    }
+}
+
+
+</style>
+
+<div class="page-wrap">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="
+                text-align:center;
+                margin-bottom:15px;
+                font-weight:600;
+                color:{% if message.tags == 'error' %}red{% else %}green{% endif %};
+            ">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!--  ADD BRAND BOX  -->
+    <div class="add-box">
+        <h2>Add Product Brand Names</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <label>Brand Name:</label>
+            <input type="text" name="brand_name" required>
+
+            <button type="submit">+ Add Your Brand</button>
+        </form>
+    </div>
+
+    <!--  BRAND LIST TABLE  -->
+    <div class="table-wrap">
+        <table class="brand-table">
+            <tr>
+                <th style="width:10%">S.No</th>
+                <th>Brand Name</th>
+                <th style="width:25%">Actions</th>
+            </tr>
+
+            {% for b in brands %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ b.name }}</td>
+                <td>
+                    <a href="{% url 'accounts:edit_product_brand' b.id %}"
+                       class="btn-edit">Edit</a>
+
+                    <form method="post"
+                          action="{% url 'accounts:delete_product_brand' b.id %}"
+                          style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="btn-delete"
+                                onclick="return confirm('Delete this brand?')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No brands added yet</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

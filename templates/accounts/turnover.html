@@ -1,20 +1,17 @@
 {% extends "accounts/base.html" %}
 {% block content %}
+
 <style>
     .turnover-table {
         width: 70%;
-        margin: auto;
+        margin: 20px auto;
         font-size: 18px;
         background: #ffffff;
 
-        
         border-collapse: separate;
         border-spacing: 0;
 
-        
-        border: 1px solid #000000;
-
-        
+        border: 1.5px solid #000;
         border-radius: 10px;
         overflow: hidden;
     }
@@ -24,61 +21,340 @@
         padding: 12px;
         font-weight: bold;
         text-align: left;
-
-        
-        border: 1px solid #000000;
+        border: 1px solid #000;
     }
 
     .turnover-table td {
         padding: 12px;
+        border: 1px solid #000;
+    }
 
+    h2 {
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 15px;
+    }
+
+    /* SAME WIDTH AS TABLE */
+
+
+    .date-filter-box {
+        width: 66%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Date range outer box */
+    .date-filter-box {
+        margin-top: 30px;
+        padding: 25px 30px;
+        border: 2px solid #000;
+        border-radius: 12px;
+        background: #fff;
+    }
+
+    /* Title center */
+    .date-filter-box h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Form row */
+    .date-filter-form {
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    /* Inputs */
+    .date-filter-form input[type="date"] {
+        padding: 6px 10px;
+        font-size: 15px;
+    }
+
+    /*  VIEW TURNOVER BUTTON */
+    .btn-add {
+            padding: 10px 25px;
+            border-radius: 6px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+    .btn-add:hover { background: #0065d1; }
+
+    /* Monthly row base */
+    .monthly-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    /* Selected row */
+    .monthly-row.active-row {
+        background-color: #d1d5db !important;   
+        box-shadow: inset 6px 0 0 #374151;      
+    }
+
+    .monthly-row:hover {
+        background-color: #d1d5db;
+    }
+
+    /* Text clarity */
+    .monthly-row.active-row td {
+        font-weight: 700;
+        color: #111;
+    }
+
+    @media (max-width: 768px) {
+
+   
+    html, body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    
+    .date-filter-box {
+        width: calc(100% - 24px);
+        margin: 16px auto;
+        padding: 18px 14px;
+        border-radius: 14px;
+    }
+
+    .date-filter-box h3 {
+        font-size: 18px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .date-filter-form {
+        flex-direction: column;     
+        align-items: stretch;
+        gap: 14px;
         
-        border: 1px solid #000000;
     }
 
-    .turnover-table tr:hover {
-        background: #f4faff;
-        transition: 0.2s ease-in-out;
+    .date-filter-form label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
     }
 
-    .turnover-section {
-        padding: 40px 0;
+    .date-filter-form input[type="date"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        box-sizing: border-box;
     }
+
+    .date-filter-form button {
+        width: 100%;
+        margin-top: 6px;
+        font-size: 16px;
+        padding: 12px 0;
+        border-radius: 10px;
+    }
+
+    
+    h2 {
+        font-size: 20px;
+        margin-top: 26px;
+        margin-bottom: 14px;
+        text-align: center;
+    }
+
+    
+    .turnover-table {
+        width: calc(100% - 24px);
+        margin: 12px auto;
+        font-size: 14px;
+    }
+
+    .turnover-table th,
+    .turnover-table td {
+        padding: 10px 8px;
+        font-size: 14px;
+    }
+
+    
+    .turnover-table {
+        overflow-x: auto;
+        display: block;
+    }
+
+    .turnover-table tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    
+    .monthly-row {
+        cursor: pointer;
+    }
+
+    .monthly-row.active-row {
+        background-color: #e5e7eb !important;
+        box-shadow: inset 4px 0 0 #374151;
+    }
+
+     .turnover-table {
+        font-size: 13px;
+    }
+
+    .turnover-table th,
+    .turnover-table td {
+        padding: 8px 6px;
+    }
+    .monthly-scroll {
+    width: 100%;
+    overflow-x: auto;                 
+    -webkit-overflow-scrolling: touch;
+}
+
+
+.monthly-scroll .turnover-table {
+    width: 1200px;        
+    min-width: 1200px;    
+    margin: 0 auto;
+}
+
+/* Prevent text breaking */
+.monthly-scroll .turnover-table th,
+.monthly-scroll .turnover-table td {
+    white-space: nowrap;  
+    text-align: center;
+}
+
+
+  
+}
+
+
 </style>
 
 
+<div class="date-filter-box">
+    <h3>Select Date Range to View Turnover</h3>
 
+    <form method="get" class="date-filter-form">
+        <div>
+            <label>From Date</label>
+            <input type="date" name="from_date" value="{{ from_date }}" max="{{ today }}" required>
+        </div>
 
+        <div>
+            <label>To Date</label>
+            <input type="date" name="to_date" value="{{ to_date }}" max="{{ today }}" required>
+        </div>
 
-
-<div class="turnover-section">
-    <h2 style="text-align:center; margin-bottom: 20px;">Total Turnover</h2>
-
-    <table class="turnover-table">
-        <tr>
-            <th>Description</th>
-            <th>Amount</th>
-        </tr>
-        <tr>
-            <td>Total Product Sold Amount</td>
-            <td>₹{{ total_sold }}</td>
-        </tr>
-        <tr>
-            <td>Total Amount Paid by Customers</td>
-            <td>₹{{ total_paid }}</td>
-        </tr>
-        <tr>
-            <td>Total Outstanding Balance</td>
-            <td>₹{{ total_balance }}</td>
-        </tr>
-    </table>
+        <div>
+            <button type="submit" class="btn-add">
+                View Turnover
+            </button>
+        </div>
+    </form>
 </div>
 
 
 
-<br><br>
-<h2 style="text-align:center; margin-bottom: 20px;">Monthly Breakdown (Full Year)</h2>
+{% if from_date and to_date %}
+<h2>
+    Total Turnover ({{ from_date }} to {{ to_date }})
+</h2>
 
+<table class="turnover-table">
+    <thead style="background:#e8f4ff;">
+        <tr>
+            <th>Description</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Total Product Sold Amount</td>
+            <td>₹{{ range_total_sold|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td>Total Amount Paid by Customers</td>
+            <td>₹{{ range_total_paid|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td><b>Total Outstanding Balance</b></td>
+            <td><b>₹{{ range_balance|floatformat:2 }}</b></td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
+
+<!-- TOTAL TURNOVER -->
+<h2>Total Turnover</h2>
+
+<table class="turnover-table">
+    <tr>
+        <th>Description</th>
+        <th>Amount</th>
+    </tr>
+    <tr>
+        <td>Total Product Sold Amount</td>
+        <td>₹{{ total_sold }}</td>
+    </tr>
+    <tr>
+        <td>Total Amount Paid by Customers</td>
+        <td>₹{{ total_paid }}</td>
+    </tr>
+    <tr>
+        <td>Total Outstanding Balance</td>
+        <td>₹{{ total_balance }}</td>
+    </tr>
+</table>
+
+
+
+
+<!--  PRODUCT YEARLY TURNOVER  -->
+<h2>Product Turnover ({{ year }})</h2>
+
+<table class="turnover-table">
+    <tr>
+        <th>Description</th>
+        <th>Amount</th>
+    </tr>
+
+    <tr>
+        <td>Total Sales (Original Cost)</td>
+        <td>₹{{ product_turnover.total_sales_original_cost|default:0 }}</td>
+    </tr>
+
+    <tr>
+        <td>Total Customer Sales Amount</td>
+        <td>₹{{ product_turnover.total_sales|default:0 }}</td>
+    </tr>
+
+    <tr>
+        <td>Total Purchase Cost</td>
+        <td>₹{{ product_turnover.total_purchase_cost|default:0 }}</td>
+    </tr>
+
+    <tr>
+        <td>Balance Stock Cost</td>
+        <td>₹{{ balance_stock_cost | floatformat:2 }}</td>
+    </tr>
+
+    <tr>
+        <td><b>Total Profit</b></td>
+        <td><b>₹{{ product_turnover.total_profit|default:0 }}</b></td>
+    </tr>
+</table>
+
+
+<!-- MONTHLY BREAKDOWN  -->
+<h2>Monthly Breakdown (Full Year)</h2>
+<div class="monthly-scroll">
 <table class="turnover-table">
     <tr>
         <th>Month</th>
@@ -90,7 +366,7 @@
     </tr>
 
     {% for m in monthly_data %}
-    <tr>
+    <tr class="monthly-row">
         <td>{{ m.month }}</td>
         <td>₹{{ m.sold }}</td>
         <td>₹{{ m.original_cost }}</td>
@@ -100,5 +376,50 @@
     </tr>
     {% endfor %}
 </table>
+</div>
+<script>
+    const today = "{{ today }}";
+
+    const fromInput = document.getElementById("from_date");
+    const toInput = document.getElementById("to_date");
+
+    function validateDate(input) {
+        if (input.value && input.value > today) {
+            alert("❌ Future date not allowed");
+            input.value = today;
+        }
+    }
+
+    if (fromInput && toInput) {
+        fromInput.addEventListener("change", () => {
+            validateDate(fromInput);
+            toInput.min = fromInput.value;
+        });
+
+        toInput.addEventListener("change", () => {
+            validateDate(toInput);
+        });
+    }
+
+  
+    const rows = document.querySelectorAll(".monthly-row");
+
+    rows.forEach(row => {
+        row.addEventListener("click", function () {
+            rows.forEach(r => r.classList.remove("active-row"));
+            this.classList.add("active-row");
+        });
+
+        
+        row.setAttribute("tabindex", "0");
+        row.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                rows.forEach(r => r.classList.remove("active-row"));
+                this.classList.add("active-row");
+            }
+        });
+    });
+</script>
+
 
 {% endblock %}

@@ -3,13 +3,15 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from accounts.views import login_view
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     
     path('login/', login_view, name='login'),
 
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/',auth_views.LogoutView.as_view(next_page='login',template_name=None),name='logout'),
+
 
     
     path('password_reset/',
@@ -30,4 +32,6 @@ urlpatterns = [
 
     
     path('', include('accounts.urls')),
+
+   
 ]

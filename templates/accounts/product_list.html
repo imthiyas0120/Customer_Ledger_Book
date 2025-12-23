@@ -22,9 +22,112 @@
 
     .stock-cell { padding: 10px; }
     .low-stock { color: red; font-weight: bold; }
+
+    .product-table td:last-child {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.product-table td:last-child a {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 15px;
+    margin: 0 4px;
+}
+
+/* Touch / Click highlight */
+.customer-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Selected row */
+.customer-row.active-row {
+    background-color: #a7d0f6 !important;
+    box-shadow: inset 6px 0 0 #0d6efd;
+}
+
+/* Hover support */
+.customer-row:hover {
+    background-color: #a7d0f6;
+}
+
+/* Text bold on select */
+.customer-row.active-row td {
+    font-weight: 600;
+}
+
+/* COLUMN SELECT */
+.customer-table th.active-col,
+.customer-table td.active-col {
+    background-color: #dbeeff !important;
+}
+
+/* ROW + COLUMN INTERSECTION */
+.customer-row.active-row td.active-col {
+    background-color: #9ccfff !important;
+    font-weight: 700;
+}
+
+
+
+    
+@media (max-width: 768px) {
+
+    /* Wrapper scroll */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Table */
+    .product-table {
+        width: 100%;
+        min-width: 900px;  
+        font-size: 14px;
+        table-layout: auto; 
+    }
+
+    .product-table th,
+    .product-table td {
+        padding: 8px;
+        text-align: center;
+        white-space: nowrap; 
+    }
+
+    /* Actions column buttons stacked */
+     .product-table td:last-child {
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .product-table td:last-child a {
+        display: inline-block;
+        font-size: 13px;
+        padding: 5px 8px;
+        margin: 0 3px;
+    }
+
+    .product-btns {
+        display: flex;
+        flex-direction: column;   
+        gap: 10px;
+        padding: 0 15px;
+    }
+
+    .product-btns a {
+        width: 100%;
+        text-align: center;
+        margin: 0 !important;     
+        box-sizing: border-box;
+    }
+}
+
+
 </style>
 
-<h2 style="text-align:center;">Product List</h2>
+<h2 style="text-align:center;">Product list</h2>
 
 
 <div style="text-align:center; margin-bottom:20px;">
@@ -40,70 +143,121 @@
         </button>
     </form>
 </div>
-<div style="text-align:center; margin-bottom:20px;">
+<div style="text-align:center; margin-bottom:20px;" class="product-btns">
     <a href="{% url 'accounts:add_product' %}"
        style="padding:10px 20px; background:#007bff; color:white;
               text-decoration:none; border-radius:6px;">
         + Add Product
     </a>
+
+    <a href="{% url 'accounts:export_product_list_pdf' %}"
+       style="padding:10px 20px; background:#28a745; color:white;
+              text-decoration:none; border-radius:6px;margin-left:10px;">
+        ⬇ Download Product Stocks
+    </a>
+</div>
+<div class="table-responsive">
+    <table class="product-table customer-table">
+        <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Stock</th>
+            <th>Original Price</th>
+            <th>Invested Amount</th>
+            <th>Customer Price</th>
+            
+            <th>Last Updated</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for product in products %}
+        <tr class="customer-row">
+            <td>{{ forloop.counter }}</td> 
+            <td>{{ product.name }}</td>
+
+            <td class="{% if product.stock <= 2 %}low-stock{% endif %}">{{ product.stock }}</td>
+            <td>₹{{ product.price }}</td>
+            <td>₹{{ product.invested_amount }}</td>
+            <td>₹{{ product.customer_price }}</td>
+            <td>{{ product.updated_at }}</td>
+
+            <td style="text-align: center;" class="action-col">
+                <a href="{% url 'accounts:product_view' product.id %}" 
+                style="padding:6px 12px; background:#17a2b8; color:white;
+                        text-decoration:none; border-radius:5px; margin-right:5px;">View</a>
+
+                <a href="{% url 'accounts:edit_product' product.id %}"
+                style="padding:6px 12px; background:#28a745; color:white;
+                        text-decoration:none; border-radius:5px; margin-right:5px;">
+                    Edit
+                </a>
+
+                <a href="{% url 'accounts:delete_product' product.id %}"
+                style="padding:6px 12px; background:#dc3545; color:white;
+                        text-decoration:none; border-radius:5px;">
+                    Delete
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+
+        <tfoot>
+            <tr>
+                <td colspan="4" style="text-align:right; font-weight:bold;">Total Invested Amount:</td>
+                <td style="font-weight:bold; color:green;">₹{{ total_invested }}</td>
+                
+            </tr>
+        </tfoot>
+
+
+
+
+    </table>
 </div>
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Product Name</th>
-        <th>Stock</th>
-        <th>Original Price</th>
-        <th>Invested Amount</th>
-        <th>Customer Price</th>
-        
-        <th>Last Updated</th>
-        <th>Actions</th>
-    </tr>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-    {% for product in products %}
-    <tr>
-        <td>{{ forloop.counter }}</td> 
-        <td>{{ product.name }}</td>
+    const table = document.querySelector(".customer-table");
+    if (!table) return;
 
-        <td class="{% if product.stock <= 2 %}low-stock{% endif %}">{{ product.stock }}</td>
-        <td>₹{{ product.price }}</td>
-        <td>₹{{ product.invested_amount }}</td>
-        <td>₹{{ product.customer_price }}</td>
-        <td>{{ product.updated_at }}</td>
+    const headers = table.querySelectorAll("th");
+    const rows = table.querySelectorAll(".customer-row");
 
-        <td style="text-align: center;">
-            <a href="{% url 'accounts:product_view' product.id %}" 
-               style="padding:6px 12px; background:#17a2b8; color:white;
-                      text-decoration:none; border-radius:5px; margin-right:5px;">View</a>
+    /* ROW SELECT */
+    rows.forEach(row => {
+        row.addEventListener("click", function () {
+            rows.forEach(r => r.classList.remove("active-row"));
+            this.classList.add("active-row");
+        });
 
-            <a href="{% url 'accounts:edit_product' product.id %}"
-               style="padding:6px 12px; background:#28a745; color:white;
-                      text-decoration:none; border-radius:5px; margin-right:5px;">
-                Edit
-            </a>
+        row.setAttribute("tabindex", "0");
+        row.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                rows.forEach(r => r.classList.remove("active-row"));
+                this.classList.add("active-row");
+            }
+        });
+    });
 
-            <a href="{% url 'accounts:delete_product' product.id %}"
-               style="padding:6px 12px; background:#dc3545; color:white;
-                      text-decoration:none; border-radius:5px;">
-                Delete
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
+    /* COLUMN SELECT */
+    headers.forEach((th, colIndex) => {
+        th.addEventListener("click", function (e) {
+            e.stopPropagation();
 
-    <tfoot>
-<tr>
-    <td colspan="4" style="text-align:right; font-weight:bold;">Total Invested Amount:</td>
-    <td style="font-weight:bold; color:green;">₹{{ total_invested }}</td>
-    <td colspan="3"></td>
-</tr>
-</tfoot>
+            table.querySelectorAll(".active-col")
+                .forEach(el => el.classList.remove("active-col"));
 
+            table.querySelectorAll("tr").forEach(tr => {
+                const cell = tr.children[colIndex];
+                if (cell) cell.classList.add("active-col");
+            });
+        });
+    });
 
+});
+</script>
 
-
-</table>
 
 
 

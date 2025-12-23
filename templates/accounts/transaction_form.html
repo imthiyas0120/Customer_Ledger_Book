@@ -1,15 +1,24 @@
 {% extends 'accounts/base.html' %}
 
 {% block content %}
-<h1 class="page-title">Add Transaction for {{ customer.name }}</h1>
+<h1 class="page-title">Edit Product Details for {{ customer.name }}</h1>
 
 <div class="form-container">
     <form method="post">
         {% csrf_token %}
 
         <div class="form-row">
-            <label>Product name:</label>
+            <label>Select Product</label>
             {{ form.product }}
+
+        </div>
+        <div id="stock-warning"
+            style="color:red; font-size:14px; margin-top:6px; display:none;" class="form-row">
+        </div>
+
+        <div class="form-row">
+            <label>Brand Name:</label>
+            {{ form.brand }}
         </div>
 
         <div class="form-row">
@@ -21,6 +30,19 @@
             <label>Selling price (Auto-calculated):</label>
             {{ form.selling_price }}
         </div>
+
+        <div class="form-row">
+            <label>Profit Percentage (%):</label>
+            <input
+                type="text"
+                id="profit_percentage"
+                class="form-control"
+                readonly
+            >
+        </div>
+
+        <!-- Hidden original price -->
+        <input type="hidden" id="original_price">
 
         <div class="form-row">
             <label>Advance amount:</label>
@@ -103,6 +125,76 @@
     }
 
     .primary-btn:hover { background: #0056b3; }
+
+    @media (max-width: 768px) {
+
+    /* ===== Page title ===== */
+    .page-title {
+        font-size: 20px;
+        margin: 15px 10px;
+        text-align: center;
+    }
+
+    /* ===== Form container ===== */
+    .form-container {
+        width: calc(100% - 24px);   /* 🔑 full width */
+        max-width: 380px;
+        margin: 0 auto 20px;
+        padding: 18px 16px;
+        border-radius: 16px;
+        text-align: left;           /* 🔑 important */
+    }
+
+    /* ===== Each row ===== */
+    .form-row {
+        margin-bottom: 14px;
+    }
+
+    /* ===== Labels ===== */
+    .form-row label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        text-align: left;           /* 🔑 mobile UX */
+    }
+
+    /* ===== Inputs & Select ===== */
+    .form-row input,
+    .form-row select {
+        width: 100% !important;     /* 🔥 full width */
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    /* Selling price (readonly) */
+    input[name="selling_price"] {
+        background: #eef6ff;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* Profit percentage */
+    #profit_percentage {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* ===== Submit button ===== */
+    .center-btn {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .primary-btn {
+        width: 100%;
+        padding: 12px 0;
+        font-size: 15px;
+        border-radius: 10px;
+    }
+}
+
 </style>
 
 
@@ -113,30 +205,82 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
+    const productStock = {{ form.product_stock_map|safe }};
+
     const productSelect = document.getElementById("id_product");
     const quantityInput = document.getElementById("id_quantity");
-    const sellingInput = document.getElementById("id_selling_price");
+    const sellingInput  = document.getElementById("id_selling_price");
+
+    const profitBox = document.getElementById("profit_percentage");
+    const originalPriceInput = document.getElementById("original_price");
+    const stockWarning = document.getElementById("stock-warning");
+
+    if (!productSelect) return;
+
+    function calculateProfitPercentage() {
+        const sellingPrice  = parseFloat(sellingInput.value) || 0;
+        const originalPrice = parseFloat(originalPriceInput.value) || 0;
+        const qty = parseInt(quantityInput.value) || 1;
+
+        if (!sellingPrice || !originalPrice) {
+            profitBox.value = "";
+            return;
+        }
+
+        const profit = sellingPrice - (originalPrice * qty);
+        const percentage = sellingPrice > 0 ? (profit / sellingPrice) * 100 : 0;
+
+        profitBox.value = percentage.toFixed(2) + " %";
+        profitBox.style.color = percentage >= 0 ? "green" : "red";
+    }
+
+    function updateStockWarning() {
+        const productId = productSelect.value;
+        const qty = parseInt(quantityInput.value || 0);
+
+        if (!productId || !(productId in productStock)) {
+            stockWarning.style.display = "none";
+            return;
+        }
+
+        const available = productStock[productId];
+
+        if (qty > available) {
+            stockWarning.innerHTML = `⚠ Only ${available} stock available`;
+            stockWarning.style.display = "block";
+        } else {
+            stockWarning.style.display = "none";
+        }
+    }
 
     async function updateSellingPrice() {
-
         const productId = productSelect.value;
         const qty = parseInt(quantityInput.value) || 1;
 
         if (!productId) return;
 
-        
         const response = await fetch(`/get-product-price/${productId}/`);
         const data = await response.json();
 
-        const unit_price = data.customer_price || 0;
-        sellingInput.value = unit_price * qty;
+        originalPriceInput.value = data.price || 0;
+        sellingInput.value = (data.customer_price || 0) * qty;
 
+        calculateProfitPercentage();
+        updateStockWarning();
     }
 
     productSelect.addEventListener("change", updateSellingPrice);
     quantityInput.addEventListener("input", updateSellingPrice);
+    sellingInput.addEventListener("input", calculateProfitPercentage);
+
+    productSelect.addEventListener("change", updateStockWarning);
+    quantityInput.addEventListener("input", updateStockWarning);
+
+    updateSellingPrice();
 });
 </script>
+
+
 
 
 {% endblock %}

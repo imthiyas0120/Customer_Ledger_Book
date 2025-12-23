@@ -1,0 +1,94 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+<style>
+    .details-card {
+        max-width: 500px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        border: solid #666 1px;
+        font-family: Arial, sans-serif;
+    }
+
+    .details-card h2 {
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .detail-row {
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+    .divider {
+        margin: 20px 0;
+        border-top: 1px solid #ddd;
+    }
+
+    .action-btn {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 18px;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 15px;
+    }
+
+    .action-btn:hover {
+        background: #005fcc;
+    }
+    .center-btn {
+    text-align: center;
+    margin-top: 20px;
+    }
+</style>
+
+<div class="details-card">
+
+    <h2>👤 User Details</h2>
+
+    <div class="detail-row">
+        <strong>Username:</strong> {{ user.username }}
+    </div>
+    <div class="detail-row">
+        <strong>Phone:</strong>
+        {% if customer %}
+            {{ customer.phone }}
+        {% else %}
+            Not available
+        {% endif %}
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>🏢 Company Details</h2>
+
+    {% if company and company.company_name %}
+        <div class="detail-row">
+            <strong>Company:</strong> {{ company.company_name }}
+        </div>
+
+        <div class="detail-row">
+            <strong>Address:</strong><br>
+            {{ company.address }}
+        </div>
+        <div class="center-btn">
+            <a href="{% url 'accounts:company_details' %}" class="action-btn">
+                ✏️ Edit Company Details
+            </a>
+        </div>
+    {% else %}
+        <p style="color:#666;">No company details added.</p>
+
+        <div class="center-btn">
+            <a href="{% url 'accounts:company_details' %}" class="action-btn">
+                ➕ Add Company Details
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

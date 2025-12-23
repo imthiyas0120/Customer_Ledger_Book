@@ -1,0 +1,270 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+
+
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+
+<style>
+/* CARD  */
+.txn-card {
+    max-width: 520px;
+    margin: 30px auto 40px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 35px 40px;
+    border: 1px solid black;
+}
+
+
+.txn-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.txn-group {
+    margin-bottom: 18px;
+}
+
+.txn-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.txn-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+/*  ADD BUTTON  */
+.blue-btn {
+    width: 70%;
+    margin: 20px auto 0;
+    display: block;
+    background: #007bff;
+    color: #fff;
+    padding: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.blue-btn:hover {
+    background: #005fcc;
+}
+
+
+.table-wrapper {
+    width: 90%;
+    margin: 40px auto;
+    border: 1.5px solid #000;    
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+/* TABLE */
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* HEADER */
+.product-table thead th {
+    background: #f3f3f3;
+    padding: 14px;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1.5px solid #000;   
+}
+
+/* BODY CELLS */
+.product-table td {
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid #000;     
+}
+
+/* LAST ROW BORDER REMOVE */
+.product-table tr:last-child td {
+    border-bottom: none;
+}
+
+
+/*  ACTION BUTTONS */
+.action-btn {
+    min-width: 80px;
+    height: 34px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background: #28a745;
+    color: #fff;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: #fff;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+
+    /*  ADD PRODUCT CARD  */
+    .txn-card {
+        width: calc(100% - 24px);
+        max-width: 420px;
+        margin: 20px auto 30px;
+        padding: 20px 16px;
+        border-radius: 16px;
+        box-sizing: border-box;
+    }
+
+    .txn-title {
+        font-size: 20px;
+        margin-bottom: 18px;
+        text-align: center;
+    }
+
+    .txn-group label {
+        font-size: 14px;
+        text-align: left;
+    }
+
+    .txn-group input {
+        width: 100%;
+        font-size: 15px;
+        padding: 10px 12px;
+        border-radius: 8px;
+    }
+
+    /*  ADD BUTTON  */
+    .blue-btn {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 0;
+        border-radius: 10px;
+    }
+
+    /* TABLE WRAPPER */
+    .table-wrapper {
+        width: calc(100% - 24px);
+        margin: 20px auto;
+        border-radius: 14px;
+        overflow-x: auto;
+    }
+
+    /*  TABLE */
+    .product-table {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .product-table th,
+    .product-table td {
+        padding: 10px 6px;
+        text-align: center;
+        word-break: break-word;
+    }
+
+    /*  ACTION BUTTONS  */
+    .product-table td:last-child {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .action-btn {
+        width: 72px;
+        height: 32px;
+        font-size: 13px;
+        margin: 0;
+    }
+}
+
+</style>
+
+<!--ADD PRODUCT FORM -->
+<div class="txn-card">
+    <div class="txn-title">Add Product Names</div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="txn-group">
+            <label>Product Name:</label>
+            <input type="text"
+                   name="product_name"
+                   
+                   required>
+        </div>
+
+        <button type="submit" class="blue-btn">
+            + Add Your Products
+        </button>
+    </form>
+</div>
+
+<!--PRODUCT LIST TABLE  -->
+ <div class="table-wrapper">
+<table class="product-table">
+    <thead>
+        <tr>
+            <th>S.No</th>
+            <th>Product Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for v in variants %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ v.name }}</td>
+            <td>
+                <a href="{% url 'accounts:edit_product_variant' v.id %}"
+                   class="action-btn btn-edit">
+                    Edit
+                </a>
+
+                <form method="post"
+                      action="{% url 'accounts:delete_product_variant' v.id %}"
+                      style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="action-btn btn-delete">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No products added</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

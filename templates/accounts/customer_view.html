@@ -1,0 +1,250 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+<style>
+/*  HEADER */
+.view-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.view-header h2 {
+    font-size: 30px;
+    margin-bottom: 6px;
+}
+
+.view-header p {
+    font-size: 16px;
+    color: #444;
+}
+
+/*  BUTTON */
+.btn-download {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 22px;
+    background: #28a745;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+}
+.btn-download:hover {
+    background: #1e7d34;
+}
+
+/*  SECTION TITLE  */
+.section-title {
+    margin: 30px 0 12px;
+    font-size: 22px;
+}
+
+/* TABLE  */
+.view-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 17px;
+}
+
+.view-table th {
+    background: #f1f1f1;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.view-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+/*  COLORS  */
+.green {
+    background-color: #d9ffe0;
+    color: #0a7a1c;
+    font-weight: bold;
+}
+
+.red {
+    background-color: #ffe0e0;
+    color: #b30000;
+    font-weight: bold;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+}
+
+/*  BALANCE */
+.final-balance {
+    margin-top: 30px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* FULL MOBILE VIEW – MEDIA QUERY*/
+@media (max-width: 768px) {
+
+    /* 🔒 PAGE SAFE */
+    html, body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* HEADER  */
+    .view-header {
+        text-align: center;
+        margin-bottom: 18px;
+    }
+
+    .view-header h2 {
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .view-header p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .btn-download {
+        width: 100%;
+        margin-top: 12px;
+        font-size: 16px;
+        padding: 12px 0;
+        border-radius: 10px;
+        display: block;
+    }
+
+    /*  SECTION TITLE  */
+    .section-title {
+        font-size: 18px;
+        margin: 22px 0 10px;
+        text-align: left;
+    }
+
+    /*  TABLE SCROLL  */
+    .table-scroll {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 16px;
+    }
+
+    
+    .table-scroll .view-table {
+        min-width: 700px;
+        font-size: 14px;
+    }
+
+    .view-table th,
+    .view-table td {
+        padding: 8px 10px;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    /* COLORS */
+    .green {
+        font-size: 14px;
+    }
+
+    .red {
+        font-size: 14px;
+    }
+
+    /* EMPTY ROW */
+    .empty {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* FINAL BALANCE  */
+    .final-balance {
+        font-size: 20px;
+        font-weight: 700;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+}
+
+</style>
+
+<!-- HEADER -->
+<div class="view-header">
+    <h2>{{ customer.name }}</h2>
+    <p>
+        <b>Phone:</b> {{ customer.phone }} |
+        <b>Address:</b> {{ customer.address }}
+    </p>
+
+    <a href="{% url 'accounts:export_customer_pdf' customer.id %}" class="btn-download">
+        📄 Download Invoice
+    </a>
+</div>
+
+<hr>
+
+<!--PRODUCT DETAILS  -->
+<h3 class="section-title">Product Details</h3>
+<div class="table-scroll">
+<table class="view-table">
+    <tr>
+        <th>Date</th>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Selling Price</th>
+        <th>Advance</th>
+        <th>Balance</th>
+    </tr>
+
+    {% for t in transactions %}
+    <tr>
+        <td>{{ t.date|date:"d-m-Y" }}</td>
+        <td>{{ t.product_name }}</td>
+        <td>{{ t.quantity }}</td>
+        <td>₹{{ t.selling_price }}</td>
+        <td class="green">₹{{ t.advance_amount }}</td>
+        <td class="red">₹{{ t.row_balance }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6" class="empty">No product details available</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+<!--  PAYMENTS -->
+<h3 class="section-title">Payments</h3>
+
+<table class="view-table">
+    <tr>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Method</th>
+    </tr>
+
+    {% for c in credits %}
+    <tr>
+        <td>{{ c.date|date:"d-m-Y" }}</td>
+        <td class="green">₹{{ c.amount }}</td>
+        <td>{{ c.payment_method }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3" class="empty">No payments received</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<!--  FINAL BALANCE  -->
+<div class="final-balance">
+    Balance: ₹{{ balance }}
+</div>
+
+{% endblock %}

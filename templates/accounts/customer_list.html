@@ -3,6 +3,9 @@
 {% block content %}
 
 <style>
+
+    
+
     
     .add-btn {
         display: inline-block;
@@ -13,6 +16,7 @@
         border-radius: 8px;
         text-decoration: none;
         transition: 0.2s;
+        
     }
     .add-btn:hover {
         background: #005fcc;
@@ -46,35 +50,40 @@
 
     
     .action-btn {
-        padding: 6px 12px;
-        font-size: 14px;
-        border-radius: 5px;
-        color: white;
-        text-decoration: none;
-        margin-right: 5px;
-        display: inline-block;
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    margin-right: 6px;
+    display: inline-block;
+    font-weight: 600;
     }
 
-    .view-btn {
-        background: #17a2b8;
-    }
-    .view-btn:hover {
-        background: #0f7a8b;
+    .btn-add {
+    background-color: #28a745;
     }
 
-    .edit-btn {
-        background: #28a745;
-    }
-    .edit-btn:hover {
-        background: #1e7d34;
+    .btn-add:hover {
+    background-color: #1e7d34;
     }
 
-    .delete-btn {
-        background: #dc3545;
+    .btn-view {
+    background-color: #17a2b8;
     }
-    .delete-btn:hover {
-        background: #b5212e;
+    .btn-view:hover {
+        background-color: #117a8b;
     }
+
+    .btn-edit {
+    background-color: #ffc107;
+    color: #000;
+    }
+    .btn-edit:hover {
+        background-color: #e0a800;
+    }
+
+    
 
     .action-col {
         white-space: nowrap;
@@ -94,60 +103,344 @@
         font-weight: bold;
         text-align: center;
         }
+
+    /* Touch / Click highlight */
+    .customer-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* Selected row */
+    .customer-row.active-row {
+        background-color: #a7d0f6 !important;
+        box-shadow: inset 6px 0 0 #0d6efd;
+    }
+
+    /* Hover support (desktop) */
+    .customer-row:hover {
+        background-color: #a7d0f6;
+    }
+
+    /* Make text more readable on select */
+    .customer-row.active-row td {
+        font-weight: 600;
+    }
+
+ @media (max-width: 768px) {
+
+    /*  BASIC RESET  */
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body, .container {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden !important;
+        
+    }
+
+    /* SEARCH BAR  */
+    .table-responsive > div:nth-of-type(1) form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+    }
+
+    .table-responsive > div:nth-of-type(1) form {
+        display: flex;
+        flex-direction: row;          
+        gap: 8px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .table-responsive > div:nth-of-type(1) input {
+        flex: 1;                      
+        max-width: 65%;
+        font-size: 14px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .table-responsive > div:nth-of-type(1) button {
+        flex-shrink: 0;
+        width: 30%;
+        font-size: 14px;
+        padding: 10px 0;
+        border-radius: 8px;
+    }
+
+
+    /*  TOP BUTTONS */
+    .table-responsive > div:nth-of-type(2) {
+        display: flex;
+        flex-direction: column;   
+        align-items: center;
+        gap: 10px;
+    }
+
+    /*  Each button full width */
+    .table-responsive > div:nth-of-type(2) .add-btn {
+        width: 90%;              
+        max-width: 320px;
+        display: block;
+        text-align: center;
+        font-size: 14px;
+        padding: 10px 0;
+        border-radius: 10px;
+    }
+
+    /*  TABLE SCROLL */
+  .table-scroll {
+        max-height: 65vh;
+        overflow-y: auto;          
+        overflow-x: auto;          
+        -webkit-overflow-scrolling: touch;
+
+        display: block;           
+        position: relative;
+    }
+    
+    body {
+        overflow-x: hidden;
+
+    }
+
+    /*  TABLE BASE  */
+    .customer-table {
+       
+        min-width: 900px;        
+        
+        border-collapse: collapse;
+        font-size: 10px;
+        background: white;
+
+        width: 900px;              
+        min-width: 900px;
+        table-layout: auto;
+    }
+
+    .customer-table th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #f1f1f1;
+    }
+
+    /*  CELLS  */
+    .customer-table th,
+    .customer-table td {
+        padding: 5px 4px;
+        border: 1px solid #ddd;
+        text-align: center;
+        vertical-align: middle;
+
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    /*  COLUMN WIDTHS  */
+    .customer-table th:nth-child(1),
+    .customer-table td:nth-child(1) { width: 35px; }   /* S.No */
+
+    .customer-table th:nth-child(2),
+    .customer-table td:nth-child(2) { width: 47px; }   /* C.ID */
+
+    .customer-table th:nth-child(3),
+    .customer-table td:nth-child(3) { width: 65px; }   /* Date */
+
+    .customer-table th:nth-child(4),
+    .customer-table td:nth-child(4) { width: 55px; }   /* Mode */
+
+    .customer-table th:nth-child(5),
+    .customer-table td:nth-child(5) { width: 90px; }   /* Name */
+
+    .customer-table th:nth-child(6),
+    .customer-table td:nth-child(6) { width: 80px; }   /* Phone */
+
+    .customer-table th:nth-child(7),
+    .customer-table td:nth-child(7) { width: 90px; }   /* Products */
+
+    .customer-table th:nth-child(8),
+    .customer-table td:nth-child(8),
+    .customer-table th:nth-child(9),
+    .customer-table td:nth-child(9),
+    .customer-table th:nth-child(10),
+    .customer-table td:nth-child(10) { width: 65px; }  /* Amounts */
+
+           
+        
+        
+
+    /*  AMOUNT COLORS  */
+    .box-green {
+        background: #d9ffe0 !important;
+        color: #0a7a1c !important;
+        font-weight: bold;
+    }
+
+    .box-red {
+        background: #ffe0e0 !important;
+        color: #b30000 !important;
+        font-weight: bold;
+    }
+
+    /*  ACTION BUTTONS */
+    .action-col {
+        
+        display: flex;
+        flex-direction: column;     
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    .action-col .action-btn {
+        width: 100%;
+        font-size: 10px;
+        padding: 4px 6px;
+        margin: 0;
+        text-align: center;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    .customer-table td {
+    vertical-align: middle;   
+    }
+
+}
+    
 </style>
 
+<div class="table-responsive">
+    <h2 style="text-align:center;">Customer List</h2>
 
-<h2 style="text-align:center;">Customers</h2>
+
+    <div style="text-align:center; margin-bottom:20px;">
+        <form method="get" action="{% url 'accounts:search_customers' %}">
+            <input type="text" name="q" placeholder="Search by name or phone"
+                value="{{ request.GET.q }}" 
+                style="padding:6px; width:250px; border-radius:6px; border:1px solid #ccc;">
+
+            <button class="btn" style="padding:8px 15px; background:#007bff; 
+                        color:white; border:none; border-radius:5px;">Search</button>
+        </form>
+    </div>
 
 
-<div style="text-align:center; margin-bottom:20px;">
-    <form method="get" action="{% url 'accounts:search_customers' %}">
-        <input type="text" name="q" placeholder="Search by name or phone"
-               value="{{ request.GET.q }}" 
-               style="padding:6px; width:250px; border-radius:6px; border:1px solid #ccc;">
+    <div style="text-align:center; margin-bottom:20px;">
+        <a href="{% url 'accounts:customer_add' %}" class="add-btn">
+            ➕Add Customer
+        </a>
+        <a href="{% url 'accounts:export_customer_list_pdf' %}"
+            class="add-btn"
+            style="background:#d31753; ">
+                📄 Download Customer List
+        </a>
+        <a href="{% url 'accounts:export_customer_list_pdf' %}?completed=1"
+            class="add-btn" style="background:#28a745; ">
+            ✅ Download Completed Customer List
+        </a>
 
-        <button class="btn" style="padding:8px 15px; background:#007bff; 
-                       color:white; border:none; border-radius:5px;">Search</button>
-    </form>
+
+    </div>
 </div>
 
+<div class="table-scroll">
+    <table class="customer-table">
+        <tr>
+            <th>S.No</th>
+            <th>Customer ID</th>
+            <th>Date</th>
+            <th>Mode</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Products</th>
+            <th>Total Amount</th>
+            <th>Paid</th>
+            <th>Balance</th>
+            <th>Actions</th>
+        </tr>
 
-<div style="text-align:center; margin-bottom:20px;">
-    <a href="{% url 'accounts:customer_add' %}" class="add-btn">
-        + Add Customer
-    </a>
+        {% for c in customers %}
+        <tr class="customer-row {% if c.is_due and c.balance > 0 %}due-row{% endif %}">
+
+
+            <td>{{ forloop.counter }}</td>
+            <td>{{ c.serial_no|stringformat:"03d" }}</td>
+            <td>{{ c.created_at|date:"d-m-Y"|default:"-" }}</td>
+            <td>
+                <span class="mode-badge {{ c.customer_mode|lower }}">{{ c.customer_mode|default:"-" }}</span>
+            </td>
+
+            <td>{{ c.name }}</td>
+            <td>{{ c.phone }}</td>
+            <td>{{c.products }}</td>
+            <td>₹{{ c.total_selling }}</td>
+            <td class="box-green">₹{{ c.total_paid }}</td>
+            <td class="box-red">₹{{ c.balance }}</td>
+
+            <td class="action-col">
+                <a href="{% url 'accounts:customer_ledger' c.id %}" class="action-btn btn-add">Add</a>
+                <a href="{% url 'accounts:customer_edit' c.id %}" class="action-btn btn-edit">Edit</a>
+                <a href="{% url 'accounts:customer_view' c.id %}"class="action-btn btn-view">View</a>
+                
+            </td>
+        </tr>
+        {% endfor %}
+        <tr style="font-weight:bold; background:#f2f2f2;">
+            <!-- Empty cells till Products -->
+            <td colspan="7" style="text-align:right;">TOTAL</td>
+
+            <!-- Total Amount -->
+            <td>₹{{ grand_total_amount }}</td>
+
+            <!-- Paid -->
+            <td style="background:#eaffea; color:green;">
+                ₹{{ grand_total_paid }}
+            </td>
+
+            <!-- Balance -->
+            <td style="background:#ffe5e5; color:red;">
+                ₹{{ total_balance_all }}
+            </td>
+
+            <!-- Actions column empty -->
+            <td></td>
+        </tr>
+
+    </table>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
+    const rows = document.querySelectorAll(".customer-row");
 
-<table class="customer-table">
-    <tr>
-        <th>S.No</th>
-        <th>Customer ID</th>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Total Amount</th>
-        <th>Paid</th>
-        <th>Balance</th>
-        <th>Actions</th>
-    </tr>
+    rows.forEach(row => {
 
-    {% for c in customers %}
-    <tr class="{% if c.is_due_1_month and c.balance > 0 %}due-row{% endif %}">
-        <td>{{ forloop.counter }}</td>
-        <td>{{ c.customer_id }}</td>
-        <td>{{ c.name }}</td>
-        <td>{{ c.phone }}</td>
-        <td>₹{{ c.total_selling }}</td>
-        <td class="box-green">₹{{ c.total_paid }}</td>
-        <td class="box-red">₹{{ c.balance }}</td>
+        // Click / Touch
+        row.addEventListener("click", function () {
+            rows.forEach(r => r.classList.remove("active-row"));
+            this.classList.add("active-row");
+        });
 
-        <td class="action-col">
-            <a href="{% url 'accounts:customer_ledger' c.id %}" class="action-btn view-btn">View</a>
-            <a href="{% url 'accounts:customer_edit' c.id %}" class="action-btn edit-btn">Edit</a>
-            <a href="{% url 'accounts:customer_delete' c.id %}" class="action-btn delete-btn">Delete</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+        // Keyboard support (optional)
+        row.setAttribute("tabindex", "0");
+        row.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                rows.forEach(r => r.classList.remove("active-row"));
+                this.classList.add("active-row");
+            }
+        });
+
+    });
+
+});
+</script>
 
 {% endblock %}

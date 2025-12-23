@@ -2,9 +2,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
     <title>Nizamuddin Enterprises</title>
 
@@ -27,6 +29,8 @@
             position: sticky;
             top: 0;
             z-index: 10;
+           
+              
         }
 
         .nav-left {
@@ -90,65 +94,133 @@
             display: none;
         }
 
-        @media (max-width: 1300px) {
-            .hamburger {
-                display: block;
-            }
-
-            .nav-right {
-                position: absolute;
-                top: 75px;
-                right: 0;
-                background: white;
-                width: 100%;
-                flex-direction: column;
-                align-items: center;
-                padding: 20px 0;
-                display: none;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-                border-bottom-left-radius: 20px;
-                border-bottom-right-radius: 20px;
-            }
-
-            .nav-right.show {
-                display: flex;
-            }
-
-            .nav-right a {
-                font-size: 20px;
-                margin: 12px 0;
-            }
+        .brand-name .sub {
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
         }
-
-        
         .container {
-            width: 90%;
-            max-width: 1400px;
+            max-width: 1250px;        /* 🔥 Home page look */
             margin: 40px auto;
-            background: white;
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);  
+            padding: 40px 45px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.08),
+            0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
-     
-        @media (max-width: 600px) {
 
-            body {
-                background: #ffffff !important;  
-            }
 
-            .container {
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 20px !important;
 
-                min-height: 100vh !important;   
-                border-radius: 0 !important;    
-                box-shadow: none !important;     
-                background: #ffffff !important;  
-            }
-        }
+@media (max-width: 768px) {
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    /* Navbar */
+    .navbar {
+        padding: 10px 12px;
+        
+         
+    }
+
+    /* BRAND */
+    .brand-name {
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+     .brand-name .sub {
+        font-size: 9px;      /* mobile-la reduce */
+        
+        line-height: 1.1;
+    }
+
+
+    
+
+    /*  FORCE hide desktop menu */
+    .nav-right {
+        display: none !important;
+        position: absolute;
+        top: 65px;
+        left: 0;
+        width: 100%;
+        background: #f5f7fa;
+        flex-direction: column;
+        gap: 14px;
+        padding: 10px;
+        z-index: 999;
+    }
+
+    /*  Show menu when hamburger clicked */
+    .nav-right.show {
+        display: flex !important;
+    }
+
+    /*  BIG BLUE BUTTONS */
+    .nav-right a {
+        display: block;
+        width: 50%;
+        background: #0d6efd;
+        color: white;
+        text-align: center;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .nav-right a:hover {
+        background: #084ec1;
+    }
+
+    /* Logout button */
+    .logout-btn {
+        width: 100%;
+        background: #dc3545;
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    /* Hamburger visible ONLY in mobile */
+    .hamburger {
+        display: block !important;
+        width: 30px;
+        cursor: pointer;
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 0;
+        padding: 12px 10px;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    
+}
+
+
+
+
+
     </style>
 </head>
 
@@ -160,16 +232,14 @@
     });
 </script>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
     
     <div class="navbar">
 
         <div class="nav-left">
-            <img src="{% static 'accounts/logo.png' %}" class="logo">
-            <span class="brand-name">Nizamuddin Enterprises
-                <span style="font-size: 14px; font-weight: 500; color:#555;">(Home Appliances)</span>
-            </span>
+            <img src="{% static 'accounts/logo.png' %}?v=2" class="logo">
+            <span class="brand-name">Customer Ledger Book</span>
         </div>
 
         
@@ -178,10 +248,10 @@
         <div class="nav-right" id="navMenu">
             <a href="{% url 'accounts:home' %}">Home</a>
             <a href="{% url 'accounts:customer_list' %}">Customers</a>
-            <a href="{% url 'accounts:customer_add' %}">Add Customer</a>
             <a href="{% url 'accounts:product_list' %}">Product List</a>
             <a href="{% url 'accounts:turnover' %}">Total Turnover</a>
-            <a href="{% url 'accounts:calculator' %}">Calculator</a>
+            <a href="{% url 'accounts:user_details' %}">User Details</a>
+           
 
             <form action="{% url 'logout' %}" method="post" style="display:inline;">
                 {% csrf_token %}

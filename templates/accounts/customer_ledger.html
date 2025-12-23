@@ -145,6 +145,384 @@
         }
 
 
+    @media (max-width: 768px) {
+
+    /*  PAGE FIX  */
+    html, body, .container {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden !important; /* page never scrolls */
+    }
+
+    /*  HEADER */
+    .ledger-header h2 {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .ledger-header p {
+        font-size: 14px;
+        text-align: center;
+        margin: 4px 0;
+    }
+
+    /* TOTALS  */
+    .totals-box {
+        width: calc(100% - 8px);
+        margin: 10px auto 20px;
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .totals-box th,
+    .totals-box td {
+        padding: 6px;
+    }
+
+    /*  ADD / DOWNLOAD BUTTONS  */
+    .btn-add,
+    .btn-download {
+        display: block;
+        width: 90%;
+        max-width: 320px;
+        margin: 10px auto;
+        text-align: center;
+        font-size: 14px;
+        padding: 10px 0;
+        border-radius: 10px;
+    }
+
+    /*  TABLE SCROLL (KEY PART)*/
+    .ledger-table-scroll {
+        width: 100%;
+        overflow-x: auto;                  /* ONLY table scrolls */
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        margin-bottom: 20px;
+    }
+
+    /*  TABLE  */
+    .ledger-table {
+        min-width: 750px;        /* force horizontal scroll */
+        width: max-content;
+        table-layout: fixed;
+        border-collapse: collapse;
+        font-size: 11px;
+        background: white;
+    }
+
+    .ledger-table th,
+    .ledger-table td {
+        padding: 6px 4px;
+        text-align: center;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    /* ACTIONS */
+    .action-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-action {
+        width: 60px;
+        font-size: 10px;
+        padding: 4px 0;
+        border-radius: 5px;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    h2, h3 {
+        text-align: center;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+
+    /* CREDIT BOX */
+    .credit-box {
+       
+        margin: 15px auto;
+        padding: 16px;
+        border-radius: 14px;
+        font-size: 14px;
+        width: calc(100% - 6px);
+    }
+
+    .credit-box table {
+        width: 100%;
+        font-size: 14px;
+        border-spacing: 0 10px;
+    }
+
+    .credit-box td {
+        display: block;
+        width: 100%;
+    }
+
+    .credit-box td:first-child {
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+
+    /* Inputs & select full width */
+    .credit-box input,
+    .credit-box select {
+        width: 100% !important;
+        padding: 8px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    /*ADD CREDIT BUTTON  */
+    .credit-box button,
+    .btn-add {
+        width: 90%;
+        max-width: 320px;
+        display: block;
+        margin: 15px auto 0;
+        padding: 10px 0;
+        font-size: 15px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    /*  TRANSACTIONS TABLE SCROLL */
+    .ledger-table-scroll {
+        width: 100%;
+        overflow-x: auto;                  
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        margin-bottom: 20px;
+    }
+
+    .ledger-table {
+        min-width: 550px;     
+        width: max-content;
+        table-layout: fixed;
+        font-size: 11px;
+        background: white;
+        border: 1px solid #ccc !important;
+          
+        
+        
+    }
+
+    .ledger-table:last-of-type {
+           /*  table itself inside */
+        margin: 6px auto;
+        table-layout: auto;        
+        font-size: 11px;
+    }
+
+    .ledger-table:last-of-type th,
+    .ledger-table:last-of-type td {
+        padding: 4px 4px;
+        text-align: center;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    
+
+    /* Date column slightly narrow */
+    .ledger-table:last-of-type th:nth-child(1),
+    .ledger-table:last-of-type td:nth-child(1) {
+        width: 85px;
+    }
+
+    /* Amount / Balance */
+    .ledger-table:last-of-type th:nth-child(2),
+    .ledger-table:last-of-type td:nth-child(2),
+    .ledger-table:last-of-type th:nth-child(4),
+    .ledger-table:last-of-type td:nth-child(4) {
+        width: 65px;
+        border: 1px solid #ccc !important;
+    }
+
+    .ledger-table:last-of-type th:nth-child(3),
+    .ledger-table:last-of-type td:nth-child(3) {
+        width: 55px;          
+        max-width: 55px;
+        padding: 3px 2px;
+        font-size: 10px;
+        white-space: nowrap;  
+        text-align: center;
+    }
+
+    .ledger-table:last-of-type tr {
+        height: auto;
+    }
+
+    .ledger-table:last-of-type th:last-child,
+    .ledger-table:last-of-type td:last-child {
+        width: 60px;
+        min-width: 60px;
+        max-width: 60px;
+        padding: 2px;
+        vertical-align: middle;
+        text-align: center;
+        
+        
+
+    }
+
+    /* Action column */
+    .ledger-table:last-of-type td.action-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;   
+        gap: 4px;
+        height: 100%; 
+                    
+    }
+
+     .ledger-table:last-of-type .btn-action {
+       
+        font-size: 10px;
+        padding: 3px 0;
+        margin: 0;
+        line-height: 1.2;
+        border-radius: 5px;
+       
+    }
+
+
+    .ledger-table th,
+    .ledger-table td {
+        padding: 6px 4px;
+        text-align: center;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    /* ACTION BUTTONS */
+    .action-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        
+    }
+
+    .btn-action {
+        
+        font-size: 10px;
+        padding: 4px 0;
+        border-radius: 6px;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+
+    /*  ONLY Customer Transactions table */
+    h3 + .ledger-table {
+        width: calc(100% - 10px);   
+        margin: 0 auto;
+        table-layout: fixed;        
+        min-width: unset;           
+    }
+
+    /*  Actions column width control */
+    h3 + .ledger-table th:nth-last-child(1),
+    h3 + .ledger-table td:nth-last-child(1),
+    h3 + .ledger-table th:nth-last-child(2),
+    h3 + .ledger-table td:nth-last-child(2) {
+        width: 55px;
+        max-width: 55px;
+        padding: 2px;
+        text-align: center;
+    }
+
+    /*  Buttons fit inside */
+    h3 + .ledger-table .btn-action {
+        width: 48px;
+        font-size: 10px;
+        padding: 3px 0;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    
+
+    
+}
+}
+@media (max-width: 768px) {
+
+    /*  Remove action cell box */
+    .ledger-table td.action-col {
+        border: none !important;        
+        background: transparent !important;
+        padding: 6px 0 !important;
+       
+        display: flex !important;
+        flex-direction: column;
+        align-items: center !important;     
+        justify-content: center !important; 
+        text-align: center !important;
+        
+    
+    }
+
+    /*  Remove inner table cell border (safety) */
+    .ledger-table td:last-child,
+    .ledger-table td:nth-last-child(2) {
+        border: none !important;
+        background: transparent !important;
+        text-align: center !important;  
+        vertical-align: middle;
+    }
+
+    /*  Buttons clean look */
+    .ledger-table td.action-col .btn-action {
+        border: none;
+        box-shadow: none;
+        outline: none;
+        margin: 4px auto !important;       
+        
+        display: inline-block;
+    }
+}
+@media (max-width: 768px) {
+
+    .ledger-table th:last-child,
+    .ledger-table td:last-child {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .ledger-table td.action-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;     
+        justify-content: center; 
+        gap: 6px;
+        border: none;
+        background: transparent;
+    }
+
+    .ledger-table td.action-col .btn-action {
+        width: 50px;
+        margin: 0 auto;
+        font-size: 11px;
+        padding: 5px 0;
+    }
+}
+
+
+
+
+
+
+
     
 
 </style>
@@ -154,10 +532,22 @@
 
 <div class="ledger-header">
     <h2>{{ customer.name }}</h2>
+    {% if customer_date %}
+    <p><strong>Date:</strong> {{ customer_date|date:"d-m-Y" }}</p>
+    {% endif %}
     <p><b>Phone:</b> {{ customer.phone }}</p>
     <p><b>Address:</b> {{ customer.address }}</p>
 </div>
+<div style="margin-left:20px; margin-bottom:20px;">
 
+    {% if mode == "view" %}
+        <a href="{% url 'accounts:export_customer_pdf' customer.id %}"
+           class="btn-download">
+            📄 Download Invoice
+        </a>
+    {% endif %}
+
+</div>
 <hr>
 
 
@@ -187,7 +577,6 @@
 
 <div style="margin-left:20px; margin-bottom:20px;">
     <a href="{% url 'accounts:add_transaction' customer.id %}" class="btn-add">+ Add Product</a>
-    <a href="{% url 'accounts:export_customer_pdf' customer.id %}" class="btn-download">📄 Download Invoice</a>
 </div>
 
 
@@ -195,37 +584,51 @@
 
 <h3>Product Details</h3>
 
-<table class="ledger-table">
-    <tr>
-        <th>Date</th>
-        <th>Product</th>
-        <th>Selling Price</th>
-        <th>Advance</th>
-        <th>Balance</th>
-        <th>Method</th>
-        <th colspan="2">Actions</th>
-    </tr>
+<div class="ledger-table-scroll">
 
-    {% for t in transactions %}
-    <tr>
-        <td>{{ t.date|date:"M d, Y" }}</td>
-        <td>{{ t.product_name }}</td>
-        <td>₹{{ t.selling_price }}</td>
-        <td class="box-green">₹{{ t.advance_amount }}</td>
-        <td class="box-red">₹{{ t.balance }}</td>
-        <td>{{ t.payment_method }}</td>
+    <table class="ledger-table">
+        <tr>
+            <th>Date</th>
+            <th>Product</th>
+            <th>Brand Name</th>
+            <th>Quantity</th>
+            <th>Selling Price</th>
+            <th>Profit %</th>
+            <th>Advance</th>
+            <th>Balance</th>
+            <th>Method</th>
+            <th colspan="2">Actions</th>
+        </tr>
 
-        <td class="action-col">
-            <a href="{% url 'accounts:transaction_edit' t.id %}" class="btn-action btn-edit">Edit</a>
-        </td>
+        {% for t in transactions %}
+        <tr>
+            <td>{{ t.date|date:"M d, Y" }}</td>
+            <td>{{ t.product_name }}</td>
+            <td>
+                {% if t.brand %}
+                    {{ t.brand.name }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+            <td>{{ t.quantity }}</td> 
+            <td>₹{{ t.selling_price }}</td>
+            <td>{{ t.profit_percentage|floatformat:2 }}%</td>
+            <td class="box-green">₹{{ t.advance_amount }}</td>
+            <td class="box-red">₹{{ t.balance }}</td>
+            <td>{{ t.payment_method }}</td>
 
-        <td class="action-col">
-            <a href="{% url 'accounts:transaction_delete' t.id %}" class="btn-action btn-delete">Delete</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-
+            <td class="action-col">
+                <a href="{% url 'accounts:transaction_edit' t.id %}" class="btn-action btn-edit">Edit</a>
+                
+            </td>
+            <td class="action-col">
+                <a href="{% url 'accounts:transaction_delete' t.id %}" class="btn-action btn-delete">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 
 
@@ -269,7 +672,7 @@
         <th>Amount</th>
         <th>Method</th>
         <th>Balance</th>
-        <th colspan="2">Actions</th>
+        <th>Actions</th>
     </tr>
 
     {% for c in credits %}
@@ -281,11 +684,10 @@
 
         <td class="action-col">
             <a href="{% url 'accounts:credit_edit' c.id %}" class="btn-action btn-edit">Edit</a>
-        </td>
-
-        <td class="action-col">
             <a href="{% url 'accounts:credit_delete' c.id %}" class="btn-action btn-delete">Delete</a>
         </td>
+
+        
     </tr>
     {% endfor %}
 </table>

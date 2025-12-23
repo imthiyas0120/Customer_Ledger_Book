@@ -4,6 +4,16 @@
 
 <h2 class="page-title">Add New Customer & First Transaction</h2>
 
+
+<div class="instruction-box">
+    ⚠️ <strong>Instruction:</strong><br>
+    First add at least one product before creating a customer transaction.
+    <br>
+    <a href="{% url 'accounts:add_product' %}">➕ Add Product</a>
+</div>
+
+
+
 <div class="form-card">
 
     <form method="POST">
@@ -21,6 +31,22 @@
         <label>Address:</label>
         {{ customer_form.address }}
 
+        <div class="form-row">
+            <label>Customer Mode:</label>
+
+            <select name="customer_mode" id="id_customer_mode">
+                <option value="">---------</option>
+                {% for value, label in customer_form.fields.customer_mode.choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        <br>
+
+
+
         <hr>
 
         
@@ -29,11 +55,23 @@
         <label>Product Name:</label>
         {{ transaction_form.product }}
 
+        <label>Brand Name:</label>
+        {{ transaction_form.brand }}
+
+        <p id="stock-warning" class="stock-warning">
+            ❌ Out of stock
+        </p>
+
         <label>Quantity:</label>
         {{ transaction_form.quantity }}
 
         <label>Selling Price:</label>
         {{ transaction_form.selling_price }}
+        <input type="hidden" id="original_price" value="0">
+
+
+        <label>Profit Percentage (%):</label>
+        <input type="text" id="profit_percentage" readonly placeholder="0 %">
 
         <label>Advance Amount:</label>
         {{ transaction_form.advance_amount }}
@@ -45,7 +83,10 @@
         {{ transaction_form.payment_method }}
 
         <div class="center-btn">
-            <button type="submit" class="primary-btn">
+            <button type="submit"
+                    id="save-btn"
+                    class="primary-btn"
+                    {% if no_products %}disabled{% endif %}>
                 Save Customer
             </button>
         </div>
@@ -55,7 +96,58 @@
 
 
 
+
 <style>
+
+
+.primary-btn:disabled {
+    background-color: #9bbcf5;   
+    color: #ffffff;
+    cursor: not-allowed;        
+    opacity: 0.65;
+}
+
+
+.primary-btn:disabled:hover {
+    background-color: #9bbcf5;
+}
+
+.stock-warning {
+    margin-top: 6px;
+    margin-left: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #dc3545;
+    font-family: "Segoe UI", sans-serif;
+    display: none;
+}
+
+
+.instruction-box {
+    max-width: 700px;         
+    margin: 20px auto;         
+    background: #e7f3ff;
+    border-left: 5px solid #0d6efd;
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #084298;
+    text-align: center;        
+}
+
+.instruction-box a {
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: bold;
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.textarea {
+    height: 44px !important;   
+    resize: none;              
+    overflow: hidden;          
+}
 
 .form-card {
     width: 45%;
@@ -168,39 +260,217 @@ textarea {
     margin-top: 5px;
 }
 
+@media (max-width: 768px) {
+
+    /*  Prevent horizontal scroll  */
+    html, body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /*  Page title  */
+    .page-title {
+        font-size: 20px;
+        margin: 16px 12px;
+        text-align: center;
+    }
+
+    /*  Instruction box  */
+    .instruction-box {
+        width: calc(100% - 24px);
+        margin: 12px auto 18px;
+        padding: 14px 16px;
+        font-size: 14px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    /* MAIN FORM CARD */
+    .form-card {
+        width: calc(100% - 24px);   
+        max-width: 420px;
+        margin: 0 auto 20px;
+        padding: 20px 16px;
+
+        border-radius: 16px;
+        box-shadow: none;
+        border: 1px solid #e0e0e0;
+        background: #fff;
+
+        box-sizing: border-box;
+    }
+
+    /*  Section titles */
+    .section-title {
+        font-size: 18px;
+        margin: 18px 0 12px;
+        text-align: center;
+    }
+
+    /* Labels  */
+    label {
+        display: block;
+        width: 100%;
+        text-align: left;
+        font-size: 15px;
+        font-weight: 600;
+        margin-top: 14px;
+        margin-bottom: 6px;
+    }
+
+    /*  Inputs / selects */
+    input,
+    select,
+    textarea {
+        width: 100% !important;
+        margin: 0;
+        padding: 11px 12px;
+        font-size: 15px;
+        font-weight: 500;
+
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    /*  Profit % input */
+    #profit_percentage {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* Stock warning  */
+    .stock-warning {
+        margin-top: 6px;
+        font-size: 14px;
+        text-align: left;
+    }
+
+    /*Save button  */
+    .center-btn {
+        margin-top: 22px;
+        text-align: center;
+    }
+
+    .primary-btn {
+        width: 100%;
+        padding: 14px 0;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+}
+
+
+
+
+
+
+
+
 </style>
 
 
-
-
-
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
     const productSelect = document.getElementById("id_product");
     const quantityInput = document.getElementById("id_quantity");
-    const sellingInput = document.getElementById("id_selling_price");
+    const sellingInput  = document.getElementById("id_selling_price");
+    const profitBox     = document.getElementById("profit_percentage");
+    const warning       = document.getElementById("stock-warning");
+    const saveBtn       = document.getElementById("save-btn");
+    const originalPriceInput = document.getElementById("original_price");
 
-    async function updateSellingPrice() {
+    const productStock = JSON.parse('{{ product_stock_json|escapejs }}');
+
+    //  PROFIT % CALCULATION
+    function calculateProfitPercentage() {
+
+        const sellingPrice = parseFloat(sellingInput.value) || 0;
+        const originalPrice = parseFloat(originalPriceInput.value) || 0;
+        const qty = parseInt(quantityInput.value) || 1;
+
+        if (!sellingPrice || !originalPrice || originalPrice <= 0) {
+            profitBox.value = "";
+            return;
+        }
+
+        const originalTotal = originalPrice * qty;
+        const profit = sellingPrice - originalTotal;
+
+        let percentage = 0;
+        if (sellingPrice > 0) {
+            percentage = (profit / sellingPrice) * 100;
+        }
+
+        profitBox.value = percentage.toFixed(2) + " %";
+        profitBox.style.color = percentage >= 0 ? "green" : "red";
+    }
+
+    // PRODUCT CHANGE / STOCK / AUTO PRICE
+    async function updateSellingPriceAndStock() {
 
         const productId = productSelect.value;
         const qty = parseInt(quantityInput.value) || 1;
 
+        saveBtn.disabled = true;
+        sellingInput.value = 0;
+        profitBox.value = "";
+        warning.style.display = "none";
+
         if (!productId) return;
 
-        
+        const stock = productStock[productId];
+
+        if (stock === 0) {
+            warning.innerText = "❌ Out of stock";
+            warning.style.display = "block";
+            return;
+        }
+
+        if (qty > stock) {
+            warning.innerText = `⚠️ Only ${stock} stock available`;
+            warning.style.display = "block";
+            return;
+        }
+
+        warning.style.display = "none";
+        saveBtn.disabled = false;
+
+        //  Fetch product prices
         const response = await fetch(`/get-product-price/${productId}/`);
         const data = await response.json();
 
-        const unit_price = data.customer_price || 0;
-        sellingInput.value = unit_price * qty;
+        const customerPrice = data.customer_price || 0;
+        const originalPrice = data.price || 0;
 
+        originalPriceInput.value = originalPrice;
+        sellingInput.value = customerPrice * qty;
+
+        calculateProfitPercentage();
     }
 
-    productSelect.addEventListener("change", updateSellingPrice);
-    quantityInput.addEventListener("input", updateSellingPrice);
+    //  EVENTS
+    productSelect.addEventListener("change", updateSellingPriceAndStock);
+    quantityInput.addEventListener("input", updateSellingPriceAndStock);
+
+    //  IMPORTANT: MANUAL SELLING PRICE EDIT
+    sellingInput.addEventListener("input", calculateProfitPercentage);
+
+    // Page load
+    updateSellingPriceAndStock();
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

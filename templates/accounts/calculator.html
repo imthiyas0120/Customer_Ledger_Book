@@ -1,4 +1,5 @@
 {% extends "accounts/base.html" %}
+{% block body_class %}calc-page{% endblock %}
 {% block content %}
 
 <div class="calc-container">
@@ -24,10 +25,9 @@
 
         <button onclick="press('0')">0</button>
         <button onclick="press('.')">.</button>
-        <button class="eq" onclick="calculate()">=</button>
         <button class="op" onclick="press('+')">+</button>
-
         <button class="clear" onclick="clearCalc()">Clear</button>
+        <button class="eq" onclick="calculate()">=</button>
     </div>
 </div>
 
@@ -63,6 +63,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
+    flex: 1;
 }
 
 .calc-grid button {
@@ -79,16 +80,81 @@
 }
 
 .calc-grid .eq {
+    grid-column: span 4;    
+    height: 70px;
+    font-size: 28px;         
+    font-weight: bold;
+    border-radius: 16px;
     background: #7dc2ff;
     color: white;
 }
 
 .calc-grid .clear {
-    grid-column: span 4;
+    grid-column: span 1;        
+    height: 72px;               
+    font-size: 18px;            
+    font-weight: 600;
+    border-radius: 14px;
     background: #ff8b8b;
     color: white;
-    font-weight: bold;
 }
+
+@media (max-width: 768px) {
+
+    /* REMOVE BASE PAGE EFFECT */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+        background: #ffffff;
+    }
+
+    /* FULL SCREEN CALCULATOR */
+    @media (max-width: 768px) {
+
+    .calc-page .container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+}
+
+    .calc-title {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+
+    /* DISPLAY */
+    .calc-display {
+        height: 90px;
+        font-size: 30px;
+        margin-bottom: 20px;
+    }
+
+    /* GRID */
+    .calc-grid {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .calc-grid button {
+        height: 72px;
+        font-size: 22px;
+        border-radius: 14px;
+    }
+
+    .calc-grid .clear {
+        height: 70px;
+        font-size: 20px;
+    }
+}
+
+
 </style>
 
 <script>

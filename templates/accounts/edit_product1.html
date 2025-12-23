@@ -1,0 +1,94 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+    
+<style>
+/* SAME CARD UI  */
+.txn-card {
+    max-width: 520px;
+    margin: 30px auto 50px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 35px 40px;
+}
+
+.txn-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.txn-group {
+    margin-bottom: 18px;
+}
+
+.txn-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.txn-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+/* BLUE BUTTON */
+.blue-btn {
+    width: 60%;
+    margin: 20px auto 0;
+    display: block;
+    background: #007bff;
+    color: #fff;
+    padding: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.blue-btn:hover {
+    background: #005fcc;
+}
+
+/* CANCEL BUTTON  */
+.cancel-btn {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-weight: 600;
+}
+</style>
+
+<!-- EDIT FORM  -->
+<div class="txn-card">
+    <div class="txn-title">
+        Edit Product & Size
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="txn-group">
+            <label>Product Name:</label>
+            <input type="text"
+                name="product_name"
+                value="{{ variant.name }}"
+                required>
+        </div>
+
+        
+
+        <button type="submit" class="blue-btn">
+            Update Product
+        </button>
+
+        
+    </form>
+</div>
+
+{% endblock %}

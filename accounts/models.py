@@ -4,8 +4,29 @@ from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 import random
+from django.db import models
+from django.contrib.auth.models import User
 
 
+class CompanyDetails(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    company_name = models.CharField(max_length=200)
+    address = models.TextField()
+
+    def __str__(self):
+        return self.company_name
+
+class ProductBrand(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ("user", "name")
+
+    def __str__(self):
+        return self.name
+
+    
 def generate_customer_id():
     try:
         from .models import Customer  
@@ -25,13 +46,26 @@ phone_validator = RegexValidator(
     message="Phone number must be exactly 10 digits"
 )
 
+CUSTOMER_MODE_CHOICES = [
+    ('DAILY', 'Daily'),
+    ('WEEKLY', 'Weekly'),
+    ('MONTHLY', 'Monthly'),
+    ('NET_CASH', 'Net Cash'),
+]
+
 class Customer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    serial_no = models.PositiveIntegerField(unique=True, null=True, blank=True)
+    serial_no = models.PositiveIntegerField(null=True, blank=True)
     customer_id = models.PositiveIntegerField(unique=True, default=generate_customer_id)
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=10, blank=True, null=True, validators=[phone_validator])
     address = models.TextField(blank=True, null=True)
+    created_at = models.DateField(null=True, blank=True)
+    customer_mode = models.CharField(max_length=20,choices=CUSTOMER_MODE_CHOICES)
+
+    class Meta:
+        unique_together = ("user", "serial_no")
+        
 
     def __str__(self):
         return self.name
@@ -50,19 +84,54 @@ class Customer(models.Model):
     def balance(self):
         return self.total_amount - self.total_paid
 
+    
     @property
-    def is_due_1_month(self):
-        one_month_ago = timezone.now() - timedelta(days=30)
+    def is_due(self):
+        """
+        Due calculation based on customer mode:
+        DAILY    -> 1 day
+        WEEKLY   -> 7 days
+        MONTHLY  -> 30 days
+        NET_CASH -> Never due
+        """
+
+        # Net cash customers are never due
+        if self.customer_mode == "NET_CASH":
+            return False
+
+        days_map = {
+            "DAILY": 1,
+            "WEEKLY": 7,
+            "MONTHLY": 30,
+        }
+
+        due_days = days_map.get(self.customer_mode, 30)
+        due_cutoff = timezone.now() - timedelta(days=due_days)
+
         last_credit = self.credits.filter(date__isnull=False).order_by('-date').first()
         last_transaction = self.transactions.filter(date__isnull=False).order_by('-date').first()
-        if not last_credit and not last_transaction:
-            return True
-        if last_credit:
-            return last_credit.date < one_month_ago
-        if last_transaction and last_transaction.date < one_month_ago:
-            return True
-        return False
 
+        #  Pick the MOST RECENT activity
+        dates = []
+        if last_credit:
+            dates.append(last_credit.date)
+        if last_transaction:
+            dates.append(last_transaction.date)
+
+        if not dates:
+            return True  # No activity at all → due
+
+        last_activity = max(dates)
+
+        #  Ensure DateTime comparison
+        if hasattr(last_activity, "date"):
+            last_activity = timezone.make_aware(
+                timezone.datetime.combine(last_activity, timezone.datetime.min.time())
+            )
+
+        return last_activity < due_cutoff
+    
+    
 
 
 
@@ -81,9 +150,12 @@ class Transaction(models.Model):
     product_name = models.CharField(max_length=100, null=True)
     quantity = models.PositiveIntegerField(default=1)
 
-    
+    profit_percentage = models.FloatField(default=0)
+
     original_price = models.PositiveIntegerField(default=0)   
-    customer_price = models.PositiveIntegerField(default=0)   
+    customer_price = models.PositiveIntegerField(default=0)
+       
+    brand = models.ForeignKey(ProductBrand,on_delete=models.SET_NULL,null=True,blank=True)
 
     date = models.DateTimeField(null=True, blank=True)
     selling_price = models.PositiveIntegerField(default=0)  
@@ -133,22 +205,21 @@ class MonthlyTurnover(models.Model):
 class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
-    price = models.PositiveIntegerField(default=0)  
-    customer_price = models.PositiveIntegerField(default=0)  
+    price = models.PositiveIntegerField(default=0)
+    customer_price = models.PositiveIntegerField(default=0)
     stock = models.PositiveIntegerField(default=0)
     updated_at = models.DateField(null=True, blank=True)
     invested_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    def save(self, *args, **kwargs):
-        
-        stock = int(self.stock or 0)
-        price = int(self.price or 0)
+    class Meta:
+        unique_together = ("user", "name")   #  ADD THIS
 
-        self.invested_amount = stock * price
-        super().save(*args, **kwargs)
+    
 
     def __str__(self):
         return self.name
+
+
 
 
     
@@ -170,8 +241,61 @@ class UserSecurity(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+
+class ProductVariant(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ("user", "name")
+
+    def __str__(self):
+        return self.name
 
 
+class ProductYearlyTurnover(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    year = models.IntegerField()
+
+    total_purchase_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_sales = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_profit = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_sales_original_cost = models.DecimalField(max_digits=10,decimal_places=2,default=0)
+
+    created_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("user", "year")
+
+    def __str__(self):
+        return f"{self.user.username} - {self.year}"
+
+
+
+class PasswordResetOTP(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() > self.created_at + timedelta(minutes=5)
+    
+class EmailOTP(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() > self.created_at + timedelta(minutes=5)
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.user.username
 
 
 

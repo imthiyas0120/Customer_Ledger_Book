@@ -1,6 +1,8 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
-
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 <style>
     body {
         background: linear-gradient(to bottom right, #eef4ff, #ffffff);
@@ -13,12 +15,12 @@
         max-width: 1150px;
         margin: 60px auto;
         padding: 70px 60px;
-        background: #ffffff;      /* WHITE BOX */
-        border-radius: 22px;       /* ROUNDED CORNERS */
+        background: #ffffff;      
+        border-radius: 22px;       
         text-align: center;
         animation: fadeIn 0.7s ease-in-out;
 
-        /* REMOVED BOX SHADOW COMPLETELY */
+      
         box-shadow: none !important;
     }
 
@@ -27,7 +29,7 @@
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Heading Style */
+   
     .home-title {
         color: #000 !important;
         font-size: 32px;
@@ -80,7 +82,7 @@
         transform: translateY(-2px);
     }
 
-    /* Buttons */
+    
     .button-grid {
         display: flex;
         flex-wrap: wrap;
@@ -119,49 +121,75 @@
         transform: rotate(8deg) scale(1.2);
     }
 
-    /* MOBILE VIEW */
-    @media (max-width: 991px) {
+    
+   @media (max-width: 991px) {
 
-        .home-container {
-            padding: 25px;
-            margin: 20px;
-            border-radius: 15px;
-            background: none !important;
-            box-shadow: none !important;
-            min-height: 90vh;
-        }
-
-        .search-row {
-            width: 85% !important;
-        }
-
-        .search-box {
-            flex-direction: row !important;
-            width: 100%;
-            gap: 8px;
-        }
-
-        .search-input {
-            width: 70% !important;
-            padding: 10px;
-            font-size: 15px;
-        }
-
-        .search-btn {
-            width: 30% !important;
-            padding: 10px 0;
-            font-size: 15px;
-        }
-
-        .button-grid {
-            gap: 15px;
-        }
-
-        .home-btn {
-            width: 90% !important;
-            padding: 14px 20px !important;
-        }
+     .home-title {
+        font-size: 20px;      
+        line-height: 1.4;
+        margin-bottom: 18px;
+        word-break: break-word;  
     }
+
+    .home-container {
+        padding: 16px 12px;
+        margin: 0;
+        background: none !important;
+        box-shadow: none !important;
+        min-height: 100vh;
+    }
+
+    .button-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;          
+        margin-top: 30px;
+    }
+
+    
+    .home-btn {
+        width: 90%;
+        max-width: 360px;   
+        padding: 14px 16px;
+        font-size: 16px;    
+        border-radius: 12px;
+    }
+
+    .home-btn span {
+        font-size: 18px;    
+    }
+
+    .search-row {
+        width: 100%;
+        margin: 15px auto;
+        padding: 0 8px;
+    }
+
+    .search-box {
+        display: flex;
+        gap: 8px;
+    }
+
+    .search-input {
+        flex: 1;                 
+        padding: 10px 14px;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+
+    .search-btn {
+        width: auto;
+        padding: 10px 14px;
+        font-size: 14px;
+        border-radius: 10px;
+        white-space: nowrap;    
+    }
+}
+
+
+
+
 </style>
 
 
@@ -181,6 +209,10 @@
     </div>
 
     <div class="button-grid">
+        <a href="{% url 'accounts:company_details' %}" class="home-btn">
+            <span>🏢</span> Enter Company Details
+        </a>
+
         <a class="home-btn" href="{% url 'accounts:customer_list' %}">
             <span>📋</span> Customer List
         </a>
@@ -189,16 +221,28 @@
             <span>➕</span> Add Customer
         </a>
 
+        <a class="home-btn" href="{% url 'accounts:product_details' %}" >
+           <span>➕</span>  Add Products Names
+        </a>
+
+        <a class="home-btn" href="{% url 'accounts:add_product' %}">
+            <span>➕</span> Enter Product Stock
+        </a>
+
+        <a class="home-btn" href="{% url 'accounts:product_brands' %}">
+            <span>➕</span> Add Brand Names
+        </a>
+
+        <a class="home-btn" href="{% url 'accounts:product_list' %}">
+            <span>📦</span> Product List
+        </a>
+
         <a class="home-btn" href="{% url 'accounts:calculator' %}">
             <span>🧮</span> Calculator
         </a>
 
         <a class="home-btn" href="/turnover">
             <span>📊</span> Total Turnover
-        </a>
-
-        <a class="home-btn" href="{% url 'accounts:product_list' %}">
-            <span>📦</span> Product List
         </a>
     </div>
 </div>

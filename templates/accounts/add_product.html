@@ -1,46 +1,265 @@
 {% extends "accounts/base.html" %}
 {% block content %}
 
-<h2 style="text-align:center;">Add Product</h2>
+<h2 style="text-align:center; margin-bottom:20px;">Add Product</h2>
 
-<div style="
-    width:60%;
-    margin:auto;
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 0 12px rgba(0,0,0,0.1);
-">
+<div class="instruction-box">
+    ℹ️ <strong>Instruction:</strong><br>
+    First add all your products here. <br> Later, you can easily select them while adding customers.
+</div>
 
-    <form method="POST">
+
+<div class="product-card">
+
+    <form method="POST" autocomplete="off">
         {% csrf_token %}
 
-        <label style="font-size:18px;">Product Name</label>
-        <input type="text" name="name" required
-               style="width:100%; padding:10px; margin-bottom:15px; font-size:16px;">
+        <!-- PRODUCT NAME -->
+        <div class="form-group">
+            <label>Product Name</label>
+            <input type="text"
+                   id="product-input"
+                   name="name"
+                   required>
+            <div id="suggestions"></div>
+        </div>
 
-        
-        <label style="font-size:18px;">Stock</label>
-        <input type="number" name="stock" required
-               style="width:100%; padding:10px; margin-bottom:20px; font-size:16px;">
+        <!-- STOCK -->
+        <div class="form-group">
+            <label>Stock</label>
+            <input type="number" name="stock" required>
+        </div>
 
-        <label>Original Price</label>
-        <input type="number" name="price" class="form-control" required style="width:100%; padding:10px; margin-bottom:20px; font-size:16px;">
+        <!-- ORIGINAL PRICE -->
+        <div class="form-group">
+            <label>Original Price</label>
+            <input type="number" name="price" required>
+        </div>
 
-        <label>Customer Price</label>
-        <input type="number" name="customer_price" class="form-control" required style="width:100%; padding:10px; margin-bottom:20px; font-size:16px;">
+        <!-- CUSTOMER PRICE -->
+        <div class="form-group">
+            <label>Customer Price</label>
+            <input type="number" name="customer_price" required>
+        </div>
 
+        <!-- DATE -->
+        <div class="form-group">
+            <label>Updated Date</label>
+            <input type="date" name="updated_at"   max="{{ today|date:'Y-m-d' }}" required>
+        </div>
 
-        <label>Updated Date:</label>
-        <input type="date" name="updated_at" required> 
-
-        <button type="submit"
-                style="padding:10px 25px; background:#007bff; color:white;
-                       border:none; border-radius:6px; cursor:pointer; font-size:16px;">
-            Add Product
-        </button>
+        <!-- BUTTON CENTER -->
+        <div style="text-align:center;">
+            <button type="submit" class="blue-btn">
+                Add Product
+            </button>
+        </div>
     </form>
 
 </div>
+
+<!-- STYLES -->
+<style>
+
+.instruction-box {
+    max-width: 700px;
+    margin: 20px auto 30px auto;  
+    background: #e7f3ff;
+    border-left: 5px solid #0d6efd;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #084298;
+    text-align: center;
+}
+
+.product-card{
+    width:60%;
+    margin: auto;
+    background:#fff;
+    padding:35px 40px;
+    border-radius:14px;
+    box-shadow:0 0 14px rgba(0,0,0,0.08);
+    position:relative;
+}
+
+.form-group{
+    margin-bottom:20px;
+    position:relative;
+}
+
+.form-group label{
+    font-size:16px;
+    font-weight:600;
+    display:block;
+    margin-bottom:6px;
+}
+
+.form-group input{
+    width:100%;
+    padding:12px;
+    font-size:15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+/* AUTOCOMPLETE BOX */
+#suggestions{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:#fff;
+    border:1px solid #ddd;
+    border-top:none;
+    display:none;
+    max-height:180px;
+    overflow-y:auto;
+    z-index:1000;
+}
+
+#suggestions div{
+    padding:10px;
+    cursor:pointer;
+}
+
+#suggestions div:hover{
+    background:#f2f2f2;
+}
+
+/* BUTTON */
+.blue-btn{
+    margin-top:15px;
+    padding:12px 40px;
+    background:#007bff;
+    color:#fff;
+    font-size:16px;
+    font-weight:600;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.blue-btn:hover{
+    background:#005fcc;
+}
+
+@media (max-width: 768px) {
+
+    /*  PAGE TITLE  */
+    h2 {
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 14px;
+    }
+
+    /*  INSTRUCTION BOX  */
+    .instruction-box {
+        width: calc(100% - 24px);
+        margin: 12px auto 18px;
+        padding: 14px 16px;
+        font-size: 14px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    /*  PRODUCT CARD  */
+    .product-card {
+        width: calc(100% - 24px);
+        max-width: 420px;
+        margin: 0 auto 20px;
+        padding: 20px 16px;
+
+        border: none;
+        box-shadow: none;
+        border-radius: 16px;
+        background: #fff;
+
+        box-sizing: border-box;
+    }
+
+    /*  FORM GROUP  */
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    /*  LABELS  */
+    .form-group label {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        text-align: left;
+    }
+
+    /*  INPUTS  */
+    .form-group input {
+        width: 100%;
+        padding: 11px 12px;
+        font-size: 15px;          
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    /*  AUTOCOMPLETE  */
+    #suggestions div {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    /*  BUTTON  */
+    .blue-btn {
+        width: 100%;
+        padding: 14px 0;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 10px;
+        margin-top: 18px;
+    }
+}
+
+
+</style>
+
+<!--  AUTOCOMPLETE SCRIPT  -->
+<script>
+const input = document.getElementById("product-input");
+const box = document.getElementById("suggestions");
+
+input.addEventListener("keyup", function () {
+    const query = this.value.trim();
+
+    if (!query) {
+        box.style.display = "none";
+        return;
+    }
+
+    fetch(`/product-autocomplete/?q=${query}`)
+        .then(res => res.json())
+        .then(data => {
+            box.innerHTML = "";
+
+            if (data.length === 0) {
+                box.style.display = "none";
+                return;
+            }
+
+            data.forEach(item => {
+                const div = document.createElement("div");
+                div.textContent = item;
+                div.onclick = () => {
+                    input.value = item;
+                    box.style.display = "none";
+                };
+                box.appendChild(div);
+            });
+
+            box.style.display = "block";
+        })
+        .catch(err => console.error("Autocomplete error:", err));
+});
+</script>
+
+
 
 {% endblock %}

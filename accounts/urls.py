@@ -34,9 +34,27 @@ urlpatterns = [
     path("forgot/", views.forgot_password, name="forgot_password"),
     path("security-check/", views.reset_password, name="reset_password"),
     path("set-password/", views.save_new_password, name="save_new_password"),
-    
+    path("products/details/", views.product_details, name="product_details"),
+    path("product-variant/edit/<int:pk>/", views.edit_product_variant, name="edit_product_variant"),
+    path("product-variant/delete/<int:pk>/", views.delete_product_variant, name="delete_product_variant"),
+    path('product-autocomplete/', views.product_autocomplete, name='product_autocomplete'),
+    path("forgot/", views.forgot_password, name="forgot_password"),
+    path("signup/", views.signup, name="signup"),
+    path("verify-otp/", views.verify_otp, name="verify_otp"),
+    path("resend-otp/", views.resend_otp, name="resend_otp"),
+    path("forgot-username/", views.forgot_username, name="forgot_username"),
+    path('customer/<int:customer_id>/view/', views.customer_view, name='customer_view'),
+    path("customers/download/",views.export_customer_list_pdf,name="export_customer_list_pdf"),
+    path("product-brands/", views.product_brands, name="product_brands"),
+    path("product-brands/edit/<int:pk>/", views.edit_product_brand, name="edit_product_brand"),
+    path("product-brands/delete/<int:brand_id>/",views.delete_product_brand,name="delete_product_brand"),
+    path("products/download-stocks-pdf/",views.export_product_list_pdf,name="export_product_list_pdf"),
+    path("user-details/", views.user_details, name="user_details"),
+    path("company-details/", views.company_details, name="company_details"),
 
 
 
-    
+
+
+
 ]

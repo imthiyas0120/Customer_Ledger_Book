@@ -1,0 +1,103 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+
+<style>
+/* PAGE WRAPPER */
+.page-wrap {
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+/* EDIT BOX  */
+.edit-box {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 30px 35px;
+    border: 1.5px solid #000;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.edit-box h2 {
+    margin-bottom: 22px;
+}
+
+.edit-box label {
+    display: block;
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.edit-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+/* BUTTONS  */
+.btn-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+
+.btn-update {
+    padding: 12px 26px;
+    background: #0d6efd;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-update:hover {
+    background: #0b5ed7;
+}
+
+.btn-cancel {
+    padding: 12px 26px;
+    background: #6c757d;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.btn-cancel:hover {
+    background: #5a6268;
+}
+</style>
+
+<div class="page-wrap">
+
+    <div class="edit-box">
+        <h2>Edit Product Brand</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Brand Name:</label>
+            <input type="text" name="brand_name" value="{{ brand.name }}" required>
+
+            <div class="btn-row">
+                <button type="submit" class="btn-update">
+                    Update Brand
+                </button>
+
+                <a href="{% url 'accounts:product_brands' %}"
+                   class="btn-cancel">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

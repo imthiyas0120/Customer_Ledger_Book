@@ -1,5 +1,8 @@
 from django import forms
 from .models import Customer, Transaction, Credit, Product
+from datetime import date
+from django import forms
+from .models import ProductBrand
 
 class CustomerForm(forms.ModelForm):
     phone = forms.CharField(
@@ -11,70 +14,134 @@ class CustomerForm(forms.ModelForm):
             'maxlength': '10',
         })
     )
+
+    address = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            
+        })
+    )
+
+
+
     class Meta:
         model = Customer
-        fields = ['name', 'phone', 'address']
+        fields = ['name', 'phone', 'address','customer_mode']
+        widgets = {
+            'customer_mode': forms.Select(
+                attrs={'required': True}
+            )
+        }
 
 
 class TransactionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)   
+        self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-       
-        if user:
-            self.fields["product"].queryset = Product.objects.filter(user=user)
+        if self.user:
+            
+            self.fields["product"].queryset = Product.objects.filter(user=self.user)
+            self.fields["brand"].queryset = ProductBrand.objects.filter(user=self.user)
         else:
             self.fields["product"].queryset = Product.objects.none()
+            self.fields["brand"].queryset = ProductBrand.objects.none()
 
-       
-        self.fields['selling_price'].widget.attrs.pop('readonly', None)
+        
+        self.product_stock_map = {
+            p.id: p.stock for p in Product.objects.filter(user=self.user)
+        }
 
-    product = forms.ModelChoiceField(
-        queryset=Product.objects.none(),   
-        required=True,
-        label="Select Product"
+    brand = forms.ModelChoiceField(
+        queryset=ProductBrand.objects.none(),
+        required=False,
+        empty_label="---------"
     )
 
-    date = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+    quantity = forms.IntegerField(min_value=1)
+
+    date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "type": "date",
+                "max": date.today().isoformat()
+            }
+        ),
         required=True
     )
-
-    quantity = forms.IntegerField(min_value=1, initial=1)
 
     class Meta:
         model = Transaction
         fields = [
-            'product',
-            'quantity',
-            'selling_price',
-            'advance_amount',
-            'date',
-            'payment_method',
+            "product",
+            "brand",
+            "quantity",
+            "selling_price",
+            "advance_amount",
+            "date",
+            "payment_method",
         ]
 
+    def clean_date(self):
+        d = self.cleaned_data.get("date")
+        if d and d > date.today():
+            raise forms.ValidationError("Future date not allowed")
+        return d
 
+
+from django import forms
+from .models import CompanyDetails
+
+class CompanyDetailsForm(forms.ModelForm):
+    class Meta:
+        model = CompanyDetails
+        fields = ["company_name", "address"]
+        widgets = {
+            "company_name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Company Name"
+            }),
+            "address": forms.Textarea(attrs={
+                "class": "form-control  small-textarea",
+                "placeholder": "Company Address",
+                "rows": 2,
+            }),
+        }
 
 
 class CreditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         kwargs.pop('customer', None)
         super().__init__(*args, **kwargs)
-        if 'date' in self.fields:
-            self.fields['date'].input_formats = ['%Y-%m-%dT%H:%M']
 
     class Meta:
         model = Credit
         fields = ['payment_method', 'amount', 'date']
         widgets = {
-            'date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'date': forms.DateInput(attrs={'type': 'date','max': date.today().isoformat()}),
             'payment_method': forms.Select()
         }
 
 
+
 class CustomerEditForm(forms.ModelForm):
+    created_at = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date','max': date.today().isoformat()}),
+        required=True,
+        label="Date"
+    )
+
+    def clean_created_at(self):
+        d = self.cleaned_data.get("created_at")
+        if d and d > date.today():
+            raise forms.ValidationError("Future date not allowed")
+        return d
+    
     class Meta:
         model = Customer
-        fields = ['name', 'phone', 'address']
+        fields = ['name', 'phone', 'address','created_at','customer_mode',]
+
+        widgets = {
+            'customer_mode': forms.Select()
+        }
