@@ -1,3 +1,4 @@
+{% load static %}
 {% block content %}
 
 <div style="
@@ -11,7 +12,7 @@
 ">
 
     <div style="text-align:center; margin-bottom:20px;">
-        <img src="/static/accounts/logo.png ?v=2" style="height:60px;" alt="Logo">
+        <img src="{% static 'accounts/logo.png' %}" style="height:60px;" alt="Logo">
         <h2 style="margin-top:10px;">Create Account</h2>
     </div>
 
@@ -65,7 +66,7 @@
                 width:100%; padding:12px; padding-right:45px;
                 border:1px solid #ccc; border-radius:8px;">
 
-            <img id="eye1" src="/static/accounts/icons/eye.png"
+            <img id="eye1" src="{% static 'accounts/icons/eye.png' %}"
                 onclick="togglePassword('password1','eye1')"
                 style="width:22px; height:22px;
                        position:absolute; right:12px; top:50%;
@@ -88,7 +89,7 @@
                 width:100%; padding:12px; padding-right:45px;
                 border:1px solid #ccc; border-radius:8px;">
 
-            <img id="eye2" src="/static/accounts/icons/eye.png"
+            <img id="eye2" src="{% static 'accounts/icons/eye.png' %}"
                 onclick="togglePassword('password2','eye2')"
                 style="width:22px; height:22px;
                     position:absolute; right:12px; top:50%;
@@ -126,10 +127,10 @@ function togglePassword(inputId, eyeId) {
 
     if (field.type === "password") {
         field.type = "text";
-        icon.src = "/static/accounts/icons/invisible.png";  
+        icon.src = "{% static 'accounts/icons/invisible.png' %}";  
     } else {
         field.type = "password";
-        icon.src = "/static/accounts/icons/eye.png";  
+        icon.src = "{% static 'accounts/icons/eye.png' %}";  
     }
 }
 </script>

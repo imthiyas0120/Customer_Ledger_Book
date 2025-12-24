@@ -1,3 +1,4 @@
+{% load static %}
 {% block content %}
 
 <div style="
@@ -11,7 +12,7 @@
     text-align:center;
 ">
 
-    <img src="/static/accounts/logo.png ?v=2"
+    <img src="{% static 'accounts/logo.png' %}"
          style="height:60px; margin-bottom:15px;">
 
     <h2>Forgot Username</h2>

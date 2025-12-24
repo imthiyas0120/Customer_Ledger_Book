@@ -1,3 +1,4 @@
+{% load static %}
 {% block content %}
 
 <div style="
@@ -12,7 +13,7 @@
 ">
 
     <!-- Logo -->
-    <img src="/static/accounts/logo.png"
+    <img src="{% static 'accounts/logo.png' %}"
          style="height:60px; margin-bottom:15px;" alt="Logo">
 
     <h2 style="margin-bottom:10px;">Verify OTP</h2>
