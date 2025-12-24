@@ -6,3 +6,4 @@ whitenoise
 Pillow
 python-dotenv
 pymysql
+reportlab
