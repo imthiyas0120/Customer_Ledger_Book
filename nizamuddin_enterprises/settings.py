@@ -137,6 +137,12 @@ LOGIN_REDIRECT_URL = 'accounts:home'
 LOGOUT_REDIRECT_URL = '/login/'
 
 CSRF_USE_SESSIONS = True
+CSRF_TRUSTED_ORIGINS = [
+    "https://customer-ledger-book.onrender.com",
+]
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 
 
 
