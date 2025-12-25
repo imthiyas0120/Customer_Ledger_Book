@@ -231,10 +231,23 @@ def login_view(request):
     error = None
 
     if request.method == "POST":
-        username = request.POST.get("username")
+        username_or_email = request.POST.get("username")
         password = request.POST.get("password")
 
-        user = authenticate(request, username=username, password=password)
+        try:
+            user_obj = User.objects.get(
+                Q(username=username_or_email) |
+                Q(email=username_or_email)
+            )
+
+            user = authenticate(
+                request,
+                username=user_obj.username,
+                password=password
+            )
+
+        except User.DoesNotExist:
+            user = None
 
         if user is not None:
             login(request, user)
