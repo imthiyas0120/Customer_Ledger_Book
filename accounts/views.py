@@ -43,6 +43,12 @@ from django.contrib.auth.decorators import login_required
 from .models import CompanyDetails
 from .forms import CompanyDetailsForm
 from accounts.models import Customer, CompanyDetails
+from pathlib import Path
+
+
+
+def static_file(*paths):
+    return Path(settings.BASE_DIR, "static", *paths)
 
 
 @login_required
@@ -1572,9 +1578,11 @@ def export_customer_pdf(request, customer_id):
     width, height = A4
 
     
-    font_path = os.path.join(settings.STATIC_ROOT, "fonts", "DejaVuSans.ttf")
-    pdfmetrics.registerFont(TTFont("DejaVuSans", font_path))
-    pdfmetrics.registerFont(TTFont("DejaVuSans-Bold", os.path.join(settings.STATIC_ROOT, "fonts", "DejaVuSans-Bold.ttf")))
+    font_path = static_file("fonts", "DejaVuSans.ttf")
+    font_bold = static_file("fonts", "DejaVuSans-Bold.ttf")
+
+    pdfmetrics.registerFont(TTFont("DejaVuSans", str(font_path)))
+    pdfmetrics.registerFont(TTFont("DejaVuSans-Bold", str(font_bold)))
 
 
     
@@ -1587,7 +1595,7 @@ def export_customer_pdf(request, customer_id):
     y = height - 60
 
     
-    logo_path = os.path.join(settings.STATIC_ROOT, "accounts", "logo.png")
+    logo_path = static_file("accounts", "logo.png")
     if os.path.exists(logo_path):
         pdf.drawImage(ImageReader(logo_path), 40, y - 70, width=90, height=90)
 
@@ -1693,7 +1701,7 @@ def export_customer_pdf(request, customer_id):
     pdf.drawString(40, y, f"Balance Remaining    : ₹{balance}")
 
     
-    stamp_path = os.path.join(settings.STATIC_ROOT, "accounts", "stamp.jpg")
+    stamp_path = static_file("accounts", "stamp.jpg")
 
     if os.path.exists(stamp_path):
 
@@ -1774,11 +1782,12 @@ def export_customer_list_pdf(request):
     width, height = A4
 
     # FONTS 
-    font_regular = os.path.join(settings.STATIC_ROOT, "fonts", "DejaVuSans.ttf")
-    font_bold = os.path.join(settings.STATIC_ROOT, "fonts", "DejaVuSans-Bold.ttf")
+    font_regular = static_file("fonts", "DejaVuSans.ttf")
+    font_bold = static_file("fonts", "DejaVuSans-Bold.ttf")
 
-    pdfmetrics.registerFont(TTFont("DejaVu", font_regular))
-    pdfmetrics.registerFont(TTFont("DejaVu-Bold", font_bold))
+
+    pdfmetrics.registerFont(TTFont("DejaVu", str(font_regular)))
+    pdfmetrics.registerFont(TTFont("DejaVu-Bold", str(font_bold)))
 
     #PAGE BORDER
     border_margin = 20
@@ -1794,7 +1803,7 @@ def export_customer_list_pdf(request):
     #  HEADER
     header_top = height - 70
 
-    logo_path = os.path.join(settings.STATIC_ROOT, "accounts", "logo.png")
+    logo_path = static_file("accounts", "logo.png")
     logo_size = 100
 
     if os.path.exists(logo_path):
@@ -2051,11 +2060,11 @@ def export_product_list_pdf(request):
     width, height = A4
 
     #  FONTS 
-    font_regular = os.path.join(settings.STATIC_ROOT, "fonts", "DejaVuSans.ttf")
-    font_bold = os.path.join(settings.STATIC_ROOT, "fonts", "DejaVuSans-Bold.ttf")
+    font_regular = static_file("fonts", "DejaVuSans.ttf")
+    font_bold = static_file("fonts", "DejaVuSans-Bold.ttf")
 
-    pdfmetrics.registerFont(TTFont("DejaVu", font_regular))
-    pdfmetrics.registerFont(TTFont("DejaVu-Bold", font_bold))
+    pdfmetrics.registerFont(TTFont("DejaVu", str(font_regular)))
+    pdfmetrics.registerFont(TTFont("DejaVu-Bold", str(font_bold)))
 
     #  PAGE BORDER 
     border_margin = 20
@@ -2070,7 +2079,7 @@ def export_product_list_pdf(request):
     # HEADER 
     header_top = height - 70
 
-    logo_path = os.path.join(settings.STATIC_ROOT, "accounts", "logo.png")
+    logo_path = static_file("accounts", "logo.png")
     logo_size = 100
 
     if os.path.exists(logo_path):
