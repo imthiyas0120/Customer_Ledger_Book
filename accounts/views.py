@@ -48,7 +48,10 @@ from accounts.models import Customer, CompanyDetails
 @login_required
 def user_details(request):
     company = CompanyDetails.objects.filter(user=request.user).first()
-    profile = Profile.objects.filter(user=request.user).first()
+    profile, created = Profile.objects.get_or_create(
+        user=request.user,
+        defaults={"phone": ""}
+    )
 
     return render(request, "accounts/user_details.html", {
         "user": request.user,
