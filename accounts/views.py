@@ -264,7 +264,7 @@ def login_view(request):
         else:
             error = "Invalid username or password"
 
-    return render(request, "accounts/login.html", {"error": error,"hide_navbar": True})
+    return render(request, "accounts/login.html", {"error": error})
 
 from django.db import transaction
 @csrf_protect
@@ -353,7 +353,7 @@ def forgot_username(request):
         )
         return redirect("login")
 
-    return render(request, "accounts/forgot_username.html",{ "hide_navbar": True})
+    return render(request, "accounts/forgot_username.html")
 
 def forgot_password(request):
     if request.method == "POST":
@@ -409,7 +409,7 @@ def forgot_password(request):
         messages.success(request, "OTP sent to your registered email")
         return redirect("accounts:verify_otp")
 
-    return render(request, "accounts/forgot_password.html",{ "hide_navbar": True})
+    return render(request, "accounts/forgot_password.html")
 
 
     
@@ -450,7 +450,7 @@ def verify_otp(request):
         messages.success(request, "OTP verified successfully")
         return redirect("accounts:reset_password")
 
-    return render(request, "accounts/verify_otp.html",{ "hide_navbar": True})
+    return render(request, "accounts/verify_otp.html")
 
 
 
@@ -549,7 +549,7 @@ def save_new_password(request):
         request.session.flush()
         return redirect("login")
 
-    return render(request, "accounts/set_new_password.html", {"username": username, "hide_navbar": True})
+    return render(request, "accounts/set_new_password.html", {"username": username})
 
 
 @never_cache
