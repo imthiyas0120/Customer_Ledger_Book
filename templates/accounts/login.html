@@ -1,233 +1,170 @@
+{% extends "accounts/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+{% block content %}
 
-    <style>
-        body {
-            background: #f5f7fc;
-            font-family: Arial, sans-serif;
-        }
-
-        .login-box {
-            width: 500px;
-            margin: 60px auto;
-            background: white;
-            padding: 40px;
-            border-radius: 18px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .logo img {
-            width: 130px;
-            margin-bottom: 10px;
-        }
-
-        h2 {
-            font-size: 28px;
-            margin-bottom: 25px;
-            font-weight: bold;
-        }
-
-        
-        .input-box {
-            width: 92%;
-            margin: 12px auto;
-            position: relative;
-        }
-
-        
-        .input-box input {
-            width: 100%;
-            padding: 14px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 17px;
-            box-sizing: border-box;
-        }
-
-        
-        .eye-icon {
-            width: 24px;
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-        }
-
-        .btn-login {
-            width: 95%;
-            padding: 14px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 20px;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
-        .forgot, .signup {
-            margin-top: 15px;
-            font-size: 16px;
-        }
-
-        a {
-            color: #007bff;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        
-
-@media (hover: none) and (pointer: coarse) {
-
-    html, body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
+<style>
+    body {
         background: #f5f7fc;
+        font-family: Arial, sans-serif;
     }
 
     .login-wrapper {
-        min-height: 100svh;
+        min-height: calc(100vh - 120px); 
         display: flex;
-        align-items: center;          
-        justify-content: center;      
-        padding: 20px;                
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
     }
 
     .login-box {
-    width: 100%;
-    max-width: 500px;        
-    padding: 94px 84px;      
-    margin: 0 !important;
-
-    display: inline-flex;
-    flex-direction: column;
-
-    border-radius: 20px;
-}
-
-    .logo img {
-        width: 130px;
-        margin-bottom: 10px;
+        width: 500px;
+        background: white;
+        padding: 40px;
+        border-radius: 18px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     }
 
     h2 {
-        font-size: 26px;
-        margin-bottom: 18px;
+        font-size: 28px;
+        margin-bottom: 25px;
+        font-weight: bold;
     }
 
     .input-box {
-        margin: 10px auto;
-    }
-
-    .btn-login {
-        margin-top: 12px;
-        font-size: 18px;
-        padding: 12px;
+        width: 100%;
+        margin: 12px 0;
+        position: relative;
     }
 
     .input-box input {
-    padding: 16px;
-    font-size: 19px;
-}
+        width: 100%;
+        padding: 14px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 17px;
+    }
 
-.btn-login {
-    padding: 14px;
-    font-size: 18px;
-}
-}
+    .eye-icon {
+        width: 24px;
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
 
+    .btn-login {
+        width: 100%;
+        padding: 14px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 20px;
+        cursor: pointer;
+        margin-top: 8px;
+    }
 
+    .forgot, .signup {
+        margin-top: 15px;
+        font-size: 16px;
+    }
 
+    a {
+        color: #007bff;
+        font-weight: bold;
+        text-decoration: none;
+    }
 
+   
+    @media (hover: none) and (pointer: coarse) {
+        .login-wrapper {
+            min-height: 100svh;
+        }
 
+        .login-box {
+            width: 100%;
+            max-width: 500px;
+            padding: 94px 84px;
+            border-radius: 20px;
+        }
 
-    </style>
-</head>
+        h2 {
+            font-size: 26px;
+            margin-bottom: 18px;
+        }
 
-<body>
+        .input-box input {
+            padding: 16px;
+            font-size: 19px;
+        }
+
+        .btn-login {
+            padding: 14px;
+            font-size: 18px;
+        }
+    }
+</style>
+
 <div class="login-wrapper">
-<div class="login-box">
+    <div class="login-box">
 
-    <div class="logo">
-        <img src="{% static 'accounts/logo.png' %}" alt="Company Logo">
+        <h2>Login</h2>
+
+        {% if error %}
+            <div style="background:#ff4d4d; color:white; padding:10px;
+                        border-radius:6px; margin-bottom:15px;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Username or Email" required>
+            </div>
+
+            <div class="input-box">
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <img src="{% static 'accounts/icons/eye.png' %}"
+                     id="toggleIcon"
+                     class="eye-icon"
+                     onclick="togglePassword()">
+            </div>
+
+            <button type="submit" class="btn-login">Login</button>
+
+            <p style="margin-top:10px;">
+                <a href="{% url 'accounts:forgot_username' %}">Forgot Username?</a>
+            </p>
+
+            <div class="forgot">
+                <a href="{% url 'accounts:forgot_password' %}">Forgot Password?</a>
+            </div>
+
+            <div class="signup">
+                Don't have an account?
+                <a href="{% url 'accounts:signup' %}">Create Account</a>
+            </div>
+        </form>
     </div>
-
-    <h2>Login</h2>
-
-    {% if error %}
-    <div style="background:#ff4d4d; color:white; padding:10px; 
-                border-radius:6px; margin-bottom:15px;">
-        {{ error }}
-    </div>
-    {% endif %}
-
-
-
-
-    <form method="post">
-        {% csrf_token %}
-
-        
-        <div class="input-box">
-            <input type="text" name="username" placeholder="Username or Email" required>
-        </div>
-
-        
-        <div class="input-box">
-            <input type="password" name="password" id="password" placeholder="Password" required>
-
-            <img src="{% static 'accounts/icons/eye.png' %}"
-                id="toggleIcon"
-                class="eye-icon"
-                onclick="togglePassword()">
-        </div>
-
-        <script>
-            function togglePassword() {
-                const pwd = document.getElementById("password");
-                const icon = document.getElementById("toggleIcon");
-
-                if (pwd.type === "password") {
-                    pwd.type = "text";
-                    icon.src = "{% static 'accounts/icons/invisible.png' %}"; 
-                } else {
-                    pwd.type = "password";
-                    icon.src = "{% static 'accounts/icons/eye.png' %}"; 
-                }
-            }
-        </script>
-
-
-        <button type="submit" class="btn-login">Login</button>
-
-        <p style="margin-top:10px;">
-            <a href="{% url 'accounts:forgot_username' %}"
-            style="color:#007bff;">
-                Forgot Username?
-            </a>
-        </p>
-
-        <div class="forgot">
-            <a href="{% url 'accounts:forgot_password' %}">Forgot Password?</a>
-        </div>
-
-        <div class="signup">
-            Don't have an account?
-            <a href="{% url 'accounts:signup' %}">Create Account</a>
-        </div>
-    </form>
-
-</div>
 </div>
 
-</body>
-</html>
+<script>
+function togglePassword() {
+    const pwd = document.getElementById("password");
+    const icon = document.getElementById("toggleIcon");
+
+    if (pwd.type === "password") {
+        pwd.type = "text";
+        icon.src = "{% static 'accounts/icons/invisible.png' %}";
+    } else {
+        pwd.type = "password";
+        icon.src = "{% static 'accounts/icons/eye.png' %}";
+    }
+}
+</script>
+
+{% endblock %}

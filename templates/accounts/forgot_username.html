@@ -1,64 +1,122 @@
+{% extends "accounts/base.html" %}
 {% load static %}
 {% block content %}
 
-<div style="
-    max-width:420px;
-    margin:60px auto;
-    background:white;
-    padding:35px;
-    border-radius:16px;
-    box-shadow:0 5px 25px rgba(0,0,0,0.15);
-    font-family:Arial;
-    text-align:center;
-">
+<style>
+    body {
+        background: #f5f7fc;
+        font-family: Arial, sans-serif;
+    }
 
-    <img src="{% static 'accounts/logo.png' %}"
-         style="height:60px; margin-bottom:15px;">
+    .auth-wrapper {
+        min-height: calc(100vh - 120px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
 
-    <h2>Forgot Username</h2>
-    <p style="color:#555; margin-bottom:20px;">
-        Enter your registered email to receive your username
-    </p>
+    .auth-card {
+        max-width: 420px;
+        width: 100%;
+        background: white;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        text-align: center;
+    }
 
-    {% for message in messages %}
-        <p style="color:green; font-size:15px;">{{ message }}</p>
-    {% endfor %}
+    .auth-card img {
+        height: 60px;
+        margin-bottom: 15px;
+    }
 
-    <form method="post">
-        {% csrf_token %}
+    .auth-card h2 {
+        margin-bottom: 10px;
+    }
 
-        <input type="email"
-               name="email"
-               placeholder="Registered Email"
-               required
-               style="
-                    width:100%;
-                    padding:14px;
-                    border-radius:8px;
-                    border:1px solid #ccc;
-                    margin-bottom:18px;
-               ">
+    .auth-card p {
+        color: #555;
+    }
 
-        <button type="submit"
-                style="
-                    width:100%;
-                    padding:14px;
-                    background:#007bff;
-                    color:white;
-                    border:none;
-                    font-size:18px;
-                    border-radius:8px;
-                    cursor:pointer;
-                ">
-            Send Username
-        </button>
-    </form>
+    .auth-card input {
+        width: 100%;
+        padding: 14px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 18px;
+        font-size: 16px;
+    }
 
-    <p style="margin-top:20px; font-size:15px;">
-        Remember your username?
-        <a href="{% url 'login' %}" style="color:#007bff;">Login</a>
-    </p>
+    .auth-card button {
+        width: 100%;
+        padding: 14px;
+        background: #007bff;
+        color: white;
+        border: none;
+        font-size: 18px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
 
+    .success-msg {
+        color: green;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    
+    @media (hover: none) and (pointer: coarse) {
+        .auth-wrapper {
+            min-height: 100svh;
+        }
+
+        .auth-card {
+            padding: 90px 80px;
+            border-radius: 20px;
+        }
+
+        .auth-card input {
+            padding: 16px;
+            font-size: 18px;
+        }
+
+        .auth-card button {
+            padding: 14px;
+            font-size: 18px;
+        }
+    }
+</style>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <img src="{% static 'accounts/logo.png' %}" alt="Logo">
+
+        <h2>Forgot Username</h2>
+        <p>Enter your registered email to receive your username</p>
+
+        {% for message in messages %}
+            <p class="success-msg">{{ message }}</p>
+        {% endfor %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <input type="email"
+                   name="email"
+                   placeholder="Registered Email"
+                   required>
+
+            <button type="submit">Send Username</button>
+        </form>
+
+        <p style="margin-top:20px; font-size:15px;">
+            Remember your username?
+            <a href="{% url 'login' %}" style="color:#007bff;">Login</a>
+        </p>
+
+    </div>
 </div>
 
 {% endblock %}

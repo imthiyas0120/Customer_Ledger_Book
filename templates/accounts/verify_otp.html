@@ -1,95 +1,142 @@
+{% extends "accounts/base.html" %}
 {% load static %}
 {% block content %}
 
-<div style="
-    max-width: 420px;
-    margin: 60px auto;
-    background: white;
-    padding: 35px;
-    border-radius: 16px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.15);
-    font-family: Arial;
-    text-align: center;
-">
+<style>
+    body {
+        background: #f5f7fc;
+        font-family: Arial, sans-serif;
+    }
 
-    <!-- Logo -->
-    <img src="{% static 'accounts/logo.png' %}"
-         style="height:60px; margin-bottom:15px;" alt="Logo">
+    .otp-wrapper {
+        min-height: calc(100vh - 120px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
 
-    <h2 style="margin-bottom:10px;">Verify OTP</h2>
-    <p style="color:#555; margin-bottom:20px;">
-        Enter the OTP sent to your registered email
-    </p>
+    .otp-card {
+        max-width: 420px;
+        width: 100%;
+        background: white;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        text-align: center;
+    }
 
-    <!-- OTP Form -->
-    <form method="post">
-        {% csrf_token %}
+    .otp-card img {
+        height: 60px;
+        margin-bottom: 15px;
+    }
 
-        <input type="text"
-               name="otp"
-               placeholder="Enter OTP"
-               required
-               style="
-                    width:100%;
-                    padding:14px;
-                    border-radius:8px;
-                    border:1px solid #ccc;
-                    font-size:16px;
-                    margin-bottom:18px;
-               ">
+    .otp-card h2 {
+        margin-bottom: 10px;
+    }
 
-        <button type="submit"
-                style="
-                    width:100%;
-                    padding:14px;
-                    background:#007bff;
-                    color:white;
-                    border:none;
-                    font-size:18px;
-                    border-radius:8px;
-                    cursor:pointer;
-                ">
-            Verify OTP
-        </button>
-    </form>
+    .otp-card p {
+        color: #555;
+    }
 
-    <!-- Resend OTP -->
-    <form method="post" action="{% url 'accounts:resend_otp' %}">
-        {% csrf_token %}
-        <button id="resendBtn"
-                type="submit"
-                disabled
-                style="
-                    margin-top:18px;
-                    background:none;
-                    border:none;
-                    color:gray;
-                    font-size:15px;
-                    cursor:not-allowed;
-                ">
-            Resend OTP
-        </button>
-    </form>
+    .otp-card input {
+        width: 100%;
+        padding: 14px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        margin-bottom: 18px;
+    }
 
-    <!-- Countdown -->
-    <p id="timerText"
-       style="font-size:14px; color:#666; margin-top:6px;">
-        Resend OTP in <span id="countdown">60</span> seconds
-    </p>
+    .otp-card button {
+        width: 100%;
+        padding: 14px;
+        background: #007bff;
+        color: white;
+        border: none;
+        font-size: 18px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
 
-    <p style="margin-top:20px; font-size:15px;">
-        Remember your password?
-        <a href="{% url 'login' %}" style="color:#007bff;">Login</a>
-    </p>
+    .resend-btn {
+        margin-top: 18px;
+        background: none;
+        border: none;
+        color: gray;
+        font-size: 15px;
+        cursor: not-allowed;
+    }
 
+    .timer {
+        font-size: 14px;
+        color: #666;
+        margin-top: 6px;
+    }
+
+    
+    @media (hover: none) and (pointer: coarse) {
+        .otp-wrapper {
+            min-height: 100svh;
+        }
+
+        .otp-card {
+            padding: 90px 80px;
+            border-radius: 20px;
+        }
+
+        .otp-card input {
+            padding: 16px;
+            font-size: 18px;
+        }
+
+        .otp-card button {
+            padding: 14px;
+            font-size: 18px;
+        }
+    }
+</style>
+
+<div class="otp-wrapper">
+    <div class="otp-card">
+
+        <img src="{% static 'accounts/logo.png' %}" alt="Logo">
+
+        <h2>Verify OTP</h2>
+        <p>Enter the OTP sent to your registered email</p>
+
+        <!-- OTP FORM -->
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="otp" placeholder="Enter OTP" required>
+            <button type="submit">Verify OTP</button>
+        </form>
+
+        <!-- RESEND OTP -->
+        <form method="post" action="{% url 'accounts:resend_otp' %}">
+            {% csrf_token %}
+            <button id="resendBtn" class="resend-btn" type="submit" disabled>
+                Resend OTP
+            </button>
+        </form>
+
+        <p id="timerText" class="timer">
+            Resend OTP in <span id="countdown">60</span> seconds
+        </p>
+
+        <p style="margin-top:20px; font-size:15px;">
+            Remember your password?
+            <a href="{% url 'login' %}" style="color:#007bff;">Login</a>
+        </p>
+
+    </div>
 </div>
 
 <script>
 let timeLeft = 60;
-
 const countdownEl = document.getElementById("countdown");
-const resendBtn   = document.getElementById("resendBtn");
-const timerText   = document.getElementById("timerText");
+const resendBtn = document.getElementById("resendBtn");
+const timerText = document.getElementById("timerText");
 
 const timer = setInterval(() => {
     timeLeft--;
