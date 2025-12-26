@@ -48,12 +48,12 @@ from accounts.models import Customer, CompanyDetails
 @login_required
 def user_details(request):
     company = CompanyDetails.objects.filter(user=request.user).first()
-    customer = Customer.objects.filter(user=request.user).first()
+    profile = Profile.objects.filter(user=request.user).first()
 
     return render(request, "accounts/user_details.html", {
         "user": request.user,
         "company": company,
-         "customer": customer,
+        "profile": profile,
     })
 
 @login_required
