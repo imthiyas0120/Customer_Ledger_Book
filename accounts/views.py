@@ -44,6 +44,8 @@ from .models import CompanyDetails
 from .forms import CompanyDetailsForm
 from accounts.models import Customer, CompanyDetails
 from pathlib import Path
+from .models import Profile
+
 
 
 
@@ -1608,8 +1610,10 @@ def export_customer_pdf(request, customer_id):
     pdf.setFont("DejaVuSans", 12)
 
     # Phone 
-    phone = customer.phone if customer.phone else ""
-    pdf.drawString(150, y - 20, f"Phone: {phone}")
+    profile = Profile.objects.filter(user=request.user).first()
+    user_phone = profile.phone if profile and profile.phone else ""
+
+    pdf.drawString(150, y - 20, f"Phone: {user_phone}")
 
     # Address
     address = company.address if company else ""
@@ -1823,8 +1827,11 @@ def export_customer_list_pdf(request):
     pdf.setFont("DejaVu", 11)
 
     # Phone 
-    phone = customers.first().phone if customers.exists() else ""
-    pdf.drawCentredString(width / 2, header_top - 22, f"Phone: {phone}")
+    profile = Profile.objects.filter(user=request.user).first()
+    user_phone = profile.phone if profile and profile.phone else ""
+
+    pdf.drawCentredString(width / 2,header_top - 22,f"Phone: {user_phone}")
+
 
     # Address – company address
     address = company.address if company else ""
@@ -2099,8 +2106,11 @@ def export_product_list_pdf(request):
     pdf.setFont("DejaVu", 11)
 
     # Phone 
-    phone = first_customer.phone if first_customer else ""
-    pdf.drawCentredString(width / 2, header_top - 22, f"Phone: {phone}")
+    profile = Profile.objects.filter(user=request.user).first()
+    user_phone = profile.phone if profile and profile.phone else ""
+
+    pdf.drawCentredString(width / 2,header_top - 22,f"Phone: {user_phone}")
+
 
     # Address 
     address = company.address if company else ""
