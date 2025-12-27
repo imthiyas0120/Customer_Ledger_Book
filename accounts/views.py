@@ -86,15 +86,23 @@ def company_details(request):
         "form": form
     })
 
+from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.conf import settings
+
 def test_email(request):
-    send_mail(
-        "Test from server",
-        "Mail working successfully!",
-        "imthiyasdjango@gmail.com",
-        ["imthiyasdjango@gmail.com"],  
-        fail_silently=False
-    )
-    return HttpResponse("Email sent from server!")
+    try:
+        send_mail(
+            subject="Test from server",
+            message="Mail working successfully!",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=["imthiyasdjango@gmail.com"],
+            fail_silently=True,   # 🔥 VERY IMPORTANT
+        )
+        return HttpResponse("✅ Email function executed (check inbox / logs)")
+    except Exception as e:
+        return HttpResponse(f"❌ Email error: {e}")
+
 
 def save_yearly_product_turnover(user):
     year = datetime.now().year

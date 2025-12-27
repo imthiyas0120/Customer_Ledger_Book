@@ -171,3 +171,5 @@ EMAIL_HOST_PASSWORD = 'drtj gkow foqa wgpb'    # App Password (16-digit)
 
 DEFAULT_FROM_EMAIL = 'Nizamuddin Enterprises <nizamuddin.otp@gmail.com>'
 
+EMAIL_TIMEOUT = 5
+
