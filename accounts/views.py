@@ -317,6 +317,12 @@ def signup(request):
         "accounts/signup.html",
         {"error_message": error_message, "hide_navbar": True}
     )
+from django.conf import settings
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+
 def forgot_username(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -324,29 +330,29 @@ def forgot_username(request):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            messages.error(
+            messages.success(
                 request,
                 "If this email is registered, you will receive your username."
             )
             return redirect("accounts:forgot_username")
 
-        
         send_mail(
             subject="Your Username – Nizamuddin Enterprises",
             message=f"""
-            Hello {user.first_name},
+        Hello {user.first_name},
 
-            You requested to recover your username.
+        You requested to recover your username.
 
-            Your username is:
-            ➡ {user.username}
+        Your username is:
+        ➡ {user.username}
 
-            If you did not request this, please ignore this email.
+        If you did not request this, please ignore this email.
 
-            – Nizamuddin Enterprises
-                        """,
-            from_email=None, 
+        – Nizamuddin Enterprises
+        """,
+            from_email=settings.DEFAULT_FROM_EMAIL,  
             recipient_list=[email],
+            fail_silently=False,
         )
 
         messages.success(
@@ -357,40 +363,40 @@ def forgot_username(request):
 
     return render(request, "accounts/forgot_username.html")
 
+
+from django.conf import settings
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+import random
+
 def forgot_password(request):
     if request.method == "POST":
         username = request.POST.get("username")
 
-       
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             messages.error(request, "User not found")
             return redirect("accounts:forgot_password")
 
-       
         email = user.email
-
         if not email:
             messages.error(request, "No email linked with this account")
             return redirect("accounts:forgot_password")
 
-        
+       
         EmailOTP.objects.filter(user=user).delete()
 
         
         otp = str(random.randint(100000, 999999))
 
-        
-        print("EMAIL OTP:", otp)
-        print("EMAIL:", email)
-
-        
         EmailOTP.objects.create(user=user, otp=otp)
 
-       
+        
         send_mail(
-            subject="Password Reset OTP",
+            subject="Password Reset OTP – Nizamuddin Enterprises",
             message=f"""
         Hello {user.first_name},
 
@@ -401,17 +407,18 @@ def forgot_password(request):
 
         – Nizamuddin Enterprises
         """,
-            from_email=None,          
+            from_email=settings.DEFAULT_FROM_EMAIL, 
             recipient_list=[email],
+            fail_silently=False,
         )
 
-        
         request.session["reset_user_id"] = user.id
 
         messages.success(request, "OTP sent to your registered email")
         return redirect("accounts:verify_otp")
 
     return render(request, "accounts/forgot_password.html")
+
 
 
     
@@ -457,26 +464,54 @@ def verify_otp(request):
 
 
 
+from django.contrib import messages
+from django.shortcuts import redirect, render
+from django.contrib.auth.models import User
+
 def reset_password(request):
     user_id = request.session.get("reset_user_id")
 
-    if not user_id:
+   
+    if not user_id or not request.session.get("otp_verified"):
+        return redirect("accounts:forgot_password")
+
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
         return redirect("accounts:forgot_password")
 
     if request.method == "POST":
-        password = request.POST.get("password")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
 
-        user = User.objects.get(id=user_id)
-        user.set_password(password)
+        
+        if password1 != password2:
+            return render(
+                request,
+                "accounts/reset_password.html",
+                {
+                    "error": "Passwords do not match",
+                    "hide_navbar": True
+                }
+            )
+
+       
+        user.set_password(password1)
         user.save()
 
-        PasswordResetOTP.objects.filter(user=user).delete()
+       
+        EmailOTP.objects.filter(user=user).delete()
         request.session.flush()
 
-        messages.success(request, "Password reset successful")
+        messages.success(request, "Password reset successful. Please login.")
         return redirect("login")
 
-    return render(request, "accounts/reset_password.html",{ "hide_navbar": True})
+    return render(
+        request,
+        "accounts/reset_password.html",
+        {"hide_navbar": True}
+    )
+
 
 def resend_otp(request):
     user_id = request.session.get("reset_user_id")
