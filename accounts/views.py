@@ -749,6 +749,7 @@ def edit_product(request, product_id):
        
         product.stock = new_stock
         product.invested_amount = product.price * product.stock
+        product.updated_at = request.POST.get("updated_at")
 
         
         product.save()
