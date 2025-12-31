@@ -744,29 +744,32 @@ def edit_product(request, product_id):
         product.name = request.POST.get("name")
         product.price = int(request.POST.get("price"))
         product.customer_price = int(request.POST.get("customer_price"))
-
         new_stock = int(request.POST.get("stock"))
 
        
-        if new_stock > old_stock:
-            added_stock = new_stock - old_stock
-            product.invested_amount += added_stock * product.price
-
-       
         product.stock = new_stock
-        product.updated_at = request.POST.get("updated_at")
+        product.invested_amount = product.price * product.stock
+
+        
         product.save()
 
-        ProductStockHistory.objects.create(
-            product=product,
-            stock_before=old_stock,
-            stock_after=new_stock,
-            user=request.user
-        )
+        
+        if old_stock != new_stock:
+            ProductStockHistory.objects.create(
+                product=product,
+                stock_before=old_stock,
+                stock_after=new_stock,
+                user=request.user
+            )
 
         return redirect("accounts:product_list")
 
-    return render(request, "accounts/edit_product.html", {"product": product, "today": date.today()})
+    return render(
+        request,
+        "accounts/edit_product.html",
+        {"product": product, "today": date.today()}
+    )
+
 
 
 
