@@ -369,96 +369,61 @@ textarea {
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    const productSelect = document.getElementById("id_product");
-    const quantityInput = document.getElementById("id_quantity");
-    const sellingInput  = document.getElementById("id_selling_price");
-    const profitBox     = document.getElementById("profit_percentage");
-    const warning       = document.getElementById("stock-warning");
-    const saveBtn       = document.getElementById("save-btn");
-    const originalPriceInput = document.getElementById("original_price");
+        const productSelect = document.getElementById("id_product");
+        const quantityInput = document.getElementById("id_quantity");
+        const sellingInput  = document.getElementById("id_selling_price");
+        const warning       = document.getElementById("stock-warning");
+        const saveBtn       = document.getElementById("save-btn");
+        const originalPriceInput = document.getElementById("original_price");
 
-    const productStock = JSON.parse('{{ product_stock_json|escapejs }}');
+        const productStock = JSON.parse('{{ product_stock_json|escapejs }}');
 
-    //  PROFIT % CALCULATION
-    function calculateProfitPercentage() {
+        async function updateSellingPriceAndStock() {
 
-        const sellingPrice = parseFloat(sellingInput.value) || 0;
-        const originalPrice = parseFloat(originalPriceInput.value) || 0;
-        const qty = parseInt(quantityInput.value) || 1;
+            const productId = productSelect.value;
+            const qty = parseInt(quantityInput.value) || 1;
 
-        if (!sellingPrice || !originalPrice || originalPrice <= 0) {
-            profitBox.value = "";
-            return;
+            sellingInput.value = 0;
+            warning.style.display = "none";
+
+            if (!productId) return;
+
+            const stock = productStock[productId];
+
+            if (stock === 0) {
+                warning.innerText = "❌ Out of stock";
+                warning.style.display = "block";
+                saveBtn.disabled = true;
+                return;
+            }
+
+            if (qty > stock) {
+                warning.innerText = `⚠️ Only ${stock} stock available`;
+                warning.style.display = "block";
+                saveBtn.disabled = true;
+                return;
+            }
+
+            saveBtn.disabled = false;
+
+            // ✅ CORRECT URL
+            const response = await fetch(`/accounts/get-product-price/${productId}/`);
+            const data = await response.json();
+
+            const customerPrice = data.customer_price || 0;
+            const originalPrice = data.price || 0;
+
+            originalPriceInput.value = originalPrice;
+            sellingInput.value = customerPrice * qty;
         }
 
-        const originalTotal = originalPrice * qty;
-        const profit = sellingPrice - originalTotal;
-
-        let percentage = 0;
-        if (sellingPrice > 0) {
-            percentage = (profit / sellingPrice) * 100;
-        }
-
-        profitBox.value = percentage.toFixed(2) + " %";
-        profitBox.style.color = percentage >= 0 ? "green" : "red";
-    }
-
-    // PRODUCT CHANGE / STOCK / AUTO PRICE
-    async function updateSellingPriceAndStock() {
-
-        const productId = productSelect.value;
-        const qty = parseInt(quantityInput.value) || 1;
-
-        saveBtn.disabled = true;
-        sellingInput.value = 0;
-        profitBox.value = "";
-        warning.style.display = "none";
-
-        if (!productId) return;
-
-        const stock = productStock[productId];
-
-        if (stock === 0) {
-            warning.innerText = "❌ Out of stock";
-            warning.style.display = "block";
-            return;
-        }
-
-        if (qty > stock) {
-            warning.innerText = `⚠️ Only ${stock} stock available`;
-            warning.style.display = "block";
-            return;
-        }
-
-        warning.style.display = "none";
-        saveBtn.disabled = false;
-
-        //  Fetch product prices
-        const response = await fetch(`/get-product-price/${productId}/`);
-        const data = await response.json();
-
-        const customerPrice = data.customer_price || 0;
-        const originalPrice = data.price || 0;
-
-        originalPriceInput.value = originalPrice;
-        sellingInput.value = customerPrice * qty;
-
-        calculateProfitPercentage();
-    }
-
-    //  EVENTS
-    productSelect.addEventListener("change", updateSellingPriceAndStock);
-    quantityInput.addEventListener("input", updateSellingPriceAndStock);
-
-    //  IMPORTANT: MANUAL SELLING PRICE EDIT
-    sellingInput.addEventListener("input", calculateProfitPercentage);
-
-    // Page load
-    updateSellingPriceAndStock();
-});
+        productSelect.addEventListener("change", updateSellingPriceAndStock);
+        quantityInput.addEventListener("input", updateSellingPriceAndStock);
+    });
 </script>
+
 
 
 
