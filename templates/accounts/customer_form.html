@@ -369,60 +369,62 @@ textarea {
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-        const productSelect = document.getElementById("id_product");
-        const quantityInput = document.getElementById("id_quantity");
-        const sellingInput  = document.getElementById("id_selling_price");
-        const warning       = document.getElementById("stock-warning");
-        const saveBtn       = document.getElementById("save-btn");
-        const originalPriceInput = document.getElementById("original_price");
+    const productSelect = document.getElementById("id_product");
+    const quantityInput = document.getElementById("id_quantity");
+    const sellingInput  = document.getElementById("id_selling_price");
+    const warning       = document.getElementById("stock-warning");
+    const saveBtn       = document.getElementById("save-btn");
+    const originalPriceInput = document.getElementById("original_price");
 
-        const productStock = JSON.parse('{{ product_stock_json|escapejs }}');
+    const productStock = JSON.parse('{{ product_stock_json|escapejs }}');
 
-        async function updateSellingPriceAndStock() {
+    async function updateSellingPriceAndStock() {
 
-            const productId = productSelect.value;
-            const qty = parseInt(quantityInput.value) || 1;
+        const productId = productSelect.value;
+        const qty = parseInt(quantityInput.value) || 1;
 
-            sellingInput.value = 0;
-            warning.style.display = "none";
+        sellingInput.value = 0;
+        warning.style.display = "none";
 
-            if (!productId) return;
+        if (!productId) return;
 
-            const stock = productStock[productId];
+        const stock = productStock[productId];
 
-            if (stock === 0) {
-                warning.innerText = "❌ Out of stock";
-                warning.style.display = "block";
-                saveBtn.disabled = true;
-                return;
-            }
-
-            if (qty > stock) {
-                warning.innerText = `⚠️ Only ${stock} stock available`;
-                warning.style.display = "block";
-                saveBtn.disabled = true;
-                return;
-            }
-
-            saveBtn.disabled = false;
-
-            // ✅ CORRECT URL
-            const response = await fetch(`/accounts/get-product-price/${productId}/`);
-            const data = await response.json();
-
-            const customerPrice = data.customer_price || 0;
-            const originalPrice = data.price || 0;
-
-            originalPriceInput.value = originalPrice;
-            sellingInput.value = customerPrice * qty;
+        if (stock === 0) {
+            warning.innerText = "❌ Out of stock";
+            warning.style.display = "block";
+            saveBtn.disabled = true;
+            return;
         }
 
-        productSelect.addEventListener("change", updateSellingPriceAndStock);
-        quantityInput.addEventListener("input", updateSellingPriceAndStock);
-    });
+        if (qty > stock) {
+            warning.innerText = `⚠️ Only ${stock} stock available`;
+            warning.style.display = "block";
+            saveBtn.disabled = true;
+            return;
+        }
+
+        saveBtn.disabled = false;
+
+        // ✅ SAFE URL
+        const url = "{% url 'accounts:get_product_price' 0 %}".replace("0", productId);
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const customerPrice = data.customer_price || 0;
+        const originalPrice = data.price || 0;
+
+        originalPriceInput.value = originalPrice;
+        sellingInput.value = customerPrice * qty;
+    }
+
+    productSelect.addEventListener("change", updateSellingPriceAndStock);
+    quantityInput.addEventListener("input", updateSellingPriceAndStock);
+});
 </script>
+
 
 
 
