@@ -68,7 +68,79 @@
     background-color: #9ccfff !important;
     font-weight: 700;
 }
+#addStockModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 9999;
 
+    /* PERFECT CENTER */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal box */
+#addStockModal .modal-box {
+    background: #ffffff;
+    width: 380px;
+    max-width: 92%;
+    padding: 22px 24px;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* Heading */
+#addStockModal h3 {
+    margin: 0 0 15px 0;
+    text-align: center;
+}
+
+/* Labels */
+#addStockModal label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Inputs */
+#addStockModal input[type="number"],
+#addStockModal input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    margin-bottom: 14px;
+}
+
+/* Buttons row */
+#addStockModal .btn-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Buttons */
+#addStockModal button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#addStockModal .btn-cancel {
+    background: #e0e0e0;
+    border: none;
+}
+
+#addStockModal .btn-update {
+    background: #28a745;
+    color: white;
+    border: none;
+}
 
 
     
@@ -226,8 +298,7 @@
 <div id="addStockModal" style="display:none; position:fixed; inset:0;
      background:rgba(0,0,0,0.5); z-index:9999;">
 
-    <div style="background:white; width:360px; margin:10% auto;
-                padding:20px; border-radius:12px;">
+    <div class="modal-box">
 
         <h3 style="margin-top:0;">Add Stock</h3>
 
@@ -244,16 +315,10 @@
             <input type="date" name="date" id="stock_date" required
                    style="width:100%; padding:8px;">
 
-            <div style="margin-top:15px; text-align:right;">
-                <button type="button"
-                        onclick="closeAddStockModal()"
-                        style="padding:6px 12px;">Cancel</button>
+            <div class="btn-row">
+                <button type="button" class="btn-cancel" onclick="closeAddStockModal()">Cancel</button>
 
-                <button type="submit"
-                        style="padding:6px 12px; background:#28a745;
-                               color:white; border:none; border-radius:5px;">
-                    Update
-                </button>
+               <button type="submit" class="btn-update">Update</button>
             </div>
         </form>
     </div>
