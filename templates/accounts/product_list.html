@@ -182,9 +182,16 @@
             <td>{{ product.updated_at }}</td>
 
             <td style="text-align: center;" class="action-col">
+                <a href="javascript:void(0)" onclick="openAddStockModal('{{ product.id }}')"
+                style="padding:6px 12px; background:#ffc107; color:black;
+                        text-decoration:none; border-radius:5px; margin-right:5px;">
+                    Add
+                </a>
+
                 <a href="{% url 'accounts:product_view' product.id %}" 
                 style="padding:6px 12px; background:#17a2b8; color:white;
-                        text-decoration:none; border-radius:5px; margin-right:5px;">View</a>
+                        text-decoration:none; border-radius:5px; margin-right:5px;">
+                    View</a>
 
                 <a href="{% url 'accounts:edit_product' product.id %}"
                 style="padding:6px 12px; background:#28a745; color:white;
@@ -214,6 +221,44 @@
 
     </table>
 </div>
+
+<!-- ADD STOCK MODAL -->
+<div id="addStockModal" style="display:none; position:fixed; inset:0;
+     background:rgba(0,0,0,0.5); z-index:9999;">
+
+    <div style="background:white; width:360px; margin:10% auto;
+                padding:20px; border-radius:12px;">
+
+        <h3 style="margin-top:0;">Add Stock</h3>
+
+        <form method="POST" action="{% url 'accounts:add_stock' %}">
+            {% csrf_token %}
+
+            <input type="hidden" name="product_id" id="modal_product_id">
+
+            <label>Enter Stock</label>
+            <input type="number" name="stock" min="1" required
+                   style="width:100%; padding:8px; margin-bottom:10px;">
+
+            <label>Date</label>
+            <input type="date" name="date" id="stock_date" required
+                   style="width:100%; padding:8px;">
+
+            <div style="margin-top:15px; text-align:right;">
+                <button type="button"
+                        onclick="closeAddStockModal()"
+                        style="padding:6px 12px;">Cancel</button>
+
+                <button type="submit"
+                        style="padding:6px 12px; background:#28a745;
+                               color:white; border:none; border-radius:5px;">
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -254,6 +299,21 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     });
+
+    /* ADD STOCK LOGIC */
+
+    window.openAddStockModal = function(productId) {
+        document.getElementById("modal_product_id").value = productId;
+
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("stock_date").max = today;
+
+        document.getElementById("addStockModal").style.display = "block";
+    }
+
+    window.closeAddStockModal = function() {
+        document.getElementById("addStockModal").style.display = "none";
+    }
 
 });
 </script>

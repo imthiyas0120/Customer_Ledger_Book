@@ -52,6 +52,41 @@ from .models import Profile
 def static_file(*paths):
     return Path(settings.BASE_DIR, "static", *paths)
 
+from django.utils.dateparse import parse_date
+from .models import Product, ProductStockHistory
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def add_stock(request):
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        add_qty = int(request.POST.get("stock"))
+        selected_date = parse_date(request.POST.get("date"))
+
+        if selected_date > date.today():
+            messages.error(request, "Future date not allowed")
+            return redirect("accounts:product_list")
+
+        product = get_object_or_404(Product, id=product_id, user=request.user)
+
+        old_stock = product.stock
+        new_stock = old_stock + add_qty
+
+        product.stock = new_stock
+        product.updated_at = selected_date
+        product.invested_amount = product.price * new_stock
+        product.save()
+
+        ProductStockHistory.objects.create(
+            product=product,
+            stock_before=old_stock,
+            stock_after=new_stock,
+            user=request.user
+        )
+
+        messages.success(request, "Stock added successfully")
+
+    return redirect("accounts:product_list")
 
 @login_required
 def user_details(request):

@@ -51,6 +51,8 @@ urlpatterns = [
     path("products/download-stocks-pdf/",views.export_product_list_pdf,name="export_product_list_pdf"),
     path("user-details/", views.user_details, name="user_details"),
     path("company-details/", views.company_details, name="company_details"),
+    path("products/add-stock/", views.add_stock, name="add_stock"),
+
 
 
 
