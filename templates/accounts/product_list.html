@@ -69,26 +69,24 @@
     font-weight: 700;
 }
 #addStockModal {
-    display: none;
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.45);
     z-index: 9999;
 
-    /* PERFECT CENTER */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: none;                 
+    align-items: center;           
+    justify-content: center;       
 }
 
 /* Modal box */
 #addStockModal .modal-box {
-    background: #ffffff;
+    background: #fff;
     width: 380px;
     max-width: 92%;
     padding: 22px 24px;
     border-radius: 14px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
 
 /* Heading */
@@ -373,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const today = new Date().toISOString().split("T")[0];
         document.getElementById("stock_date").max = today;
 
-        document.getElementById("addStockModal").style.display = "block";
+        document.getElementById("addStockModal").style.display = "flex";
     }
 
     window.closeAddStockModal = function() {
